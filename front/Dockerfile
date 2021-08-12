@@ -2,10 +2,12 @@ FROM node:14
 
 WORKDIR /aglomerados/front
 
-COPY package*.json ./
+COPY ["package.json", "package-lock.json", "./"]
 
-RUN npm ci
+RUN npm install
 
-EXPOSE 8080
+COPY . .
 
-CMD ["npm", "run", "serve"]
+EXPOSE 3000
+
+CMD ["npm", "start"]
