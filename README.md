@@ -14,7 +14,7 @@
 2. Clone o repositório.
 
     ```bash
-    $ git clone https://github.com/leosole/aglomerados.git
+    $ git clone https://github.com/leosole/aglomerados
     ```
 
 3. Instale as dependencias necessárias para o front end.
