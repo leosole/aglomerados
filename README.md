@@ -45,7 +45,7 @@
     Na pasta do projeto, execute no terminal:
 
     ```bash
-    $ docker compose -f docker-compose.yml up
+    $ docker-compose -f docker-compose.yml up
     ou
     $ docker-compose -f docker-compose.yml up -d #detached mode
     ```
