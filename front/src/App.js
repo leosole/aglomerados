@@ -12,43 +12,50 @@ const center = {
   lat: -22.861992298362203,
   lng: -43.22865199868578
 };
-
-const google = window.google;
+const libraries = ['places']
 
 function App() {
-  const libraries = ['places']
+  
   const { isLoaded } = useJsApiLoader({
     id: 'aglomerados',
     googleMapsApiKey: apikey,
     libraries: libraries
   })
-  
-  const [map, setMap] = React.useState(null)
+
+  var empty = []
+  const [markers, setMarker] = React.useState(empty);
+
+  const [map, setMap] = React.useState(null);
+
+  var searchBox = React.useRef(null);  
 
   const onLoad = React.useCallback(function callback(map) {
-    // const bounds = new window.google.maps.LatLngBounds();
-    // map.fitBounds(bounds);
     setMap(map)
   }, [])
 
   const onUnmount = React.useCallback(function callback(map) {
     setMap(null)
   }, [])
-
+  
   const onPlacesChanged = () => console.log(this.searchBox.getPlaces());
 
   const addMarker = (e) => {
-    console.log(map)
-    // var marker = new google.maps.Marker({
-    //   position: e.latLng.toJSON(),
-    //   title:"Hello World!"
-    // });
-    // marker.setMap(map);
-  // TODO objeto map
+    var num = markers.length;
+    var marker = {
+      position: e.latLng.toJSON(),
+      title:"Aglomeração!",
+      label:`Aglomeração #${num}`
+    };
+    if (markers.length)
+      setMarker([...markers, marker])
+    else
+    setMarker([marker])
+    
   }
   return isLoaded ? (
     <div>
       <GoogleMap
+        id='map'
         mapContainerStyle={containerStyle}
         center={center}
         zoom={14}
@@ -60,25 +67,23 @@ function App() {
         }}
       >
         <StandaloneSearchBox
-          onLoad={onLoad}
-          onPlacesChanged={
-            onPlacesChanged
-          }
+          onLoad={(ref) => (searchBox.current = ref)}
+          onPlacesChanged={onPlacesChanged}
         >
           <input
             type="text"
             placeholder="🔍"
             style={{
-              boxSizing: `border-box`,
-              border: `1px solid transparent`,
-              width: `320px`,
-              height: `40px`,
-              padding: `0 12px`,
-              borderRadius: `3px`,
-              boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-              fontSize: `14px`,
-              outline: `none`,
-              textOverflow: `ellipses`,
+              boxSizing: 'border-box',
+              border: '1px solid transparent',
+              width: '320px',
+              height: '40px',
+              padding: '0 12px',
+              borderRadius: '3px',
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
+              fontSize: '14px',
+              outline: 'none',
+              textOverflow: 'ellipses',
               position: "absolute",
               left: "50%",
               top: "80px",
@@ -86,9 +91,9 @@ function App() {
             }}
           />
         </StandaloneSearchBox>
-        <Marker
-          position={center}
-        />
+        {markers.map((m, i) => (
+          <Marker key={i} position={m.position} title={m.title} />
+        ))}
       </GoogleMap>
     </div>
   ) : <></>
