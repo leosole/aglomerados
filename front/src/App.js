@@ -2,6 +2,7 @@ import './App.css';
 import { GoogleMap, useJsApiLoader, StandaloneSearchBox, Marker } from '@react-google-maps/api';
 import React from 'react'
 import apikey from './apikey';
+import Header from './Header';
 
 const containerStyle = {
   width: '100vw',
@@ -24,7 +25,6 @@ function App() {
 
   var empty = []
   const [markers, setMarker] = React.useState(empty);
-
   const [map, setMap] = React.useState(null);
 
   var searchBox = React.useRef(null);  
@@ -54,6 +54,7 @@ function App() {
   }
   return isLoaded ? (
     <div>
+      <Header />
       <GoogleMap
         id='map'
         mapContainerStyle={containerStyle}
