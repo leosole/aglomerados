@@ -16,6 +16,16 @@ const initialCenter = {
 };
 const libraries = ['places']
 
+const mapOptions = {
+  mapId: '739f73fac7cfa997',
+  mapTypeControlOptions: {
+    position: 6,
+  },
+  fullscreenControlOptions: {
+    position: 9,
+  },
+}
+
 function App() {
   
   const { isLoaded } = useJsApiLoader({
@@ -30,7 +40,6 @@ function App() {
   const [center, setCenter] = React.useState(initialCenter);
   const [bounds, setBounds] = React.useState(null);
   const [cardVisible, setCardVisible] = React.useState(false)
-  const [cardPosition, setCardPosition] = React.useState(null)
   const [cardName, setCardName] = React.useState(null)
   const [cardType, setCardType] = React.useState(null)
   const [anchor, setAnchor] = React.useState(null)
@@ -66,7 +75,6 @@ function App() {
     m.addListener("click", () => {
       setCardType(info.type);
       setCardName(info.name);
-      setCardPosition(m.position);
       setAnchor({anchor: m})
       setCardVisible(true);
     })
@@ -87,7 +95,6 @@ function App() {
   }
   return isLoaded ? (
     <div>
-      <Header />
       <GoogleMap
         id='map'
         onBoundsChanged={onBoundsChanged}
@@ -97,10 +104,9 @@ function App() {
         onLoad={onLoad}
         onUnmount={onUnmount}
         onClick={addMarker}
-        options={{
-          mapId: '739f73fac7cfa997'
-        }}
+        options={mapOptions}
       >
+        <Header />
         <StandaloneSearchBox
           onLoad={(ref) => (searchBox.current = ref)}
           onPlacesChanged={onPlacesChanged}
