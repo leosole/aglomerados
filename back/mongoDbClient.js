@@ -1,7 +1,7 @@
 const { MongoClient } = require("mongodb");
 
 const url =
-  "mongodb+srv://defaultService:<password>@aglo1.xllzn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+  "mongodb+srv://defaultService:dMU5r3U$TsssVV8@aglo1.xllzn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 
 var _db;
 
