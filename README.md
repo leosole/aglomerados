@@ -47,7 +47,7 @@
     ```bash
     $ docker-compose -f docker-compose.yml up
     ou
-    $ docker-compose -f docker-compose.yml up -d #detached mode
+    $ docker compose -f docker-compose.yml up -d #detached mode
     ```
 
     A versão de desenvolvimento do **Aglomerados** está disponível localmente em http://localhost:3000
