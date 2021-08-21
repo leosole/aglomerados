@@ -3,6 +3,7 @@ import { GoogleMap, useJsApiLoader, StandaloneSearchBox, Marker } from '@react-g
 import React from 'react'
 import apikey from './apikey';
 import Header from './Header';
+import CardAglomeracao from './CardAglomeracao';
 
 const containerStyle = {
   width: '100vw',
@@ -14,6 +15,16 @@ const initialCenter = {
   lng: -43.22865199868578
 };
 const libraries = ['places']
+
+const mapOptions = {
+  mapId: '739f73fac7cfa997',
+  mapTypeControlOptions: {
+    position: 6,
+  },
+  fullscreenControlOptions: {
+    position: 9,
+  },
+}
 
 function App() {
   
@@ -28,6 +39,11 @@ function App() {
   const [map, setMap] = React.useState(null);
   const [center, setCenter] = React.useState(initialCenter);
   const [bounds, setBounds] = React.useState(null);
+  const [cardVisible, setCardVisible] = React.useState(false)
+  const [cardName, setCardName] = React.useState(null)
+  const [cardType, setCardType] = React.useState(null)
+  const [anchor, setAnchor] = React.useState(null)
+  
 
   var searchBox = React.useRef(null);  
 
@@ -54,12 +70,22 @@ function App() {
     setBounds(map.getBounds());
   }
 
+  const onMarkerLoad = (m) => {
+    const info = markers[m.zIndex];
+    m.addListener("click", () => {
+      setCardType(info.type);
+      setCardName(info.name);
+      setAnchor({anchor: m})
+      setCardVisible(true);
+    })
+  }
+
   const addMarker = (e) => {
     var num = markers.length;
     var marker = {
       position: e.latLng.toJSON(),
-      title:"Aglomeração!",
-      label:`Aglomeração #${num}`
+      name:`Aglomeração #${num}`,
+      type:`tipo #${num}`
     };
     if (markers.length)
       setMarker([...markers, marker])
@@ -69,7 +95,6 @@ function App() {
   }
   return isLoaded ? (
     <div>
-      <Header />
       <GoogleMap
         id='map'
         onBoundsChanged={onBoundsChanged}
@@ -79,10 +104,9 @@ function App() {
         onLoad={onLoad}
         onUnmount={onUnmount}
         onClick={addMarker}
-        options={{
-          mapId: '739f73fac7cfa997'
-        }}
+        options={mapOptions}
       >
+        <Header />
         <StandaloneSearchBox
           onLoad={(ref) => (searchBox.current = ref)}
           onPlacesChanged={onPlacesChanged}
@@ -110,8 +134,28 @@ function App() {
           />
         </StandaloneSearchBox>
         {markers.map((m, i) => (
-          <Marker key={i} position={m.position} title={m.title} />
+          <Marker 
+            key={i}
+            onLoad={onMarkerLoad} 
+            position={m.position} 
+            zIndex={i}
+            clickable={true}
+          />
         ))}
+        {
+          cardVisible?
+          <CardAglomeracao
+            key={0}
+            name={cardName}
+            type={cardType}
+            info={[
+              {key:"Hora", value:"20:00"},
+              {key:"Outra chave", value:"teste"}
+            ]}
+            options={anchor}
+          />:
+          <></>
+        }
       </GoogleMap>
     </div>
   ) : <></>
