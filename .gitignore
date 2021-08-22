@@ -27,5 +27,5 @@ yarn-debug.log*
 yarn-error.log*
 
 apikeys.js
-/front.src/apikey.js
+/front/src/apikey.js
 
