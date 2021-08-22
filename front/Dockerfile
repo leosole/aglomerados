@@ -1,12 +1,14 @@
-FROM node:14
+FROM node:16
 
-WORKDIR /aglomerados/front
+WORKDIR /front
 
-COPY ["package.json", "package-lock.json", "./"]
+# ENV PATH /front/node_modules/.bin:$PATH
 
-RUN npm install
+COPY package.json /front/package.json
+COPY . /front
+RUN npm install 
 
-COPY . .
+# Inicializa a aplicação
 
 EXPOSE 3000
 
