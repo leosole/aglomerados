@@ -26,6 +26,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-apikeys.js
+keys.json
 /front/src/apikey.js
 

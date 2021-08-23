@@ -1,11 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const keys = require('./../../apikeys.js');
+const fs = require('fs')
 const app = express();
 const { MongoClient } = require("mongodb");
 var ObjectId = require('mongodb').ObjectId
 
 app.use(bodyParser.urlencoded({extended: true}))
+
+var keys = JSON.parse(fs.readFileSync('./keys.json'))
 
 app.listen(3000,function() {
     console.log('listening on 3000')
