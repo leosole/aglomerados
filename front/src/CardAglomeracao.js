@@ -35,13 +35,13 @@ export default function CardAglomeracao(props) {
     <InfoWindow options={props.options}>
       <Card className={classes.root}>
         <CardContent>
-          <Typography
+          {/* <Typography
             className={classes.title}
             color="textSecondary"
             gutterBottom
           >
             {props.type}
-          </Typography>
+          </Typography> */}
           <Typography variant="h5" component="h2">
             {props.name}
           </Typography>

@@ -3,7 +3,10 @@ import { GoogleMap, useJsApiLoader, StandaloneSearchBox, Marker } from '@react-g
 import React from 'react'
 import apikey from './apikey';
 import Header from './Header';
-import CardAglomeracao from './CardAglomeracao';
+import api from './api';
+import PopulateMap from './PopulateMap';
+
+const url = '/gatherings/';
 
 const containerStyle = {
   width: '100vw',
@@ -35,21 +38,35 @@ function App() {
   })
 
   var empty = []
-  const [markers, setMarker] = React.useState(empty);
+  const [markers, setMarkers] = React.useState(empty);
   const [map, setMap] = React.useState(null);
   const [center, setCenter] = React.useState(initialCenter);
   const [bounds, setBounds] = React.useState(null);
-  const [cardVisible, setCardVisible] = React.useState(false)
-  const [cardName, setCardName] = React.useState(null)
-  const [cardType, setCardType] = React.useState(null)
-  const [anchor, setAnchor] = React.useState(null)
+  const [loaded, setLoaded] = React.useState(false)
   
+  const getMarkers = () =>{
+    api.get(url)
+    .then((r) =>{
+      loadMarkers(r.data)
+    })
+    .catch((e) => console.log(e))
+  }
+
+  const loadMarkers = (data) => {
+    data.map((m) => {
+      m.position.lat = parseFloat(m.position.lat)
+      m.position.lng = parseFloat(m.position.lng)
+    })
+    setMarkers(data)
+    setLoaded(true)
+  }
 
   var searchBox = React.useRef(null);  
 
   const onLoad = React.useCallback(function callback(map) {
     setMap(map)
     setBounds(map.getBounds());
+    getMarkers();
   }, [])
 
   const onUnmount = React.useCallback(function callback(map) {
@@ -68,31 +85,37 @@ function App() {
 
   const onBoundsChanged = () => {
     setBounds(map.getBounds());
+    getMarkers();
   }
 
-  const onMarkerLoad = (m) => {
-    const info = markers[m.zIndex];
-    m.addListener("click", () => {
-      setCardType(info.type);
-      setCardName(info.name);
-      setAnchor({anchor: m})
-      setCardVisible(true);
-    })
-  }
+  // const onMarkerLoad = (m) => {
+  //   const info = markers[m.zIndex];
+  //   m.addListener("click", () => {
+  //     setCardType(info.type);
+  //     setCardName(info.name);
+  //     setAnchor({anchor: m})
+  //     setCardVisible(true);
+  //   })
+  // }
 
-  const addMarker = (e) => {
-    var num = markers.length;
-    var marker = {
-      position: e.latLng.toJSON(),
-      name:`Aglomeração #${num}`,
-      type:`tipo #${num}`
-    };
-    if (markers.length)
-      setMarker([...markers, marker])
-    else
-    setMarker([marker])
+  // const addMarker = (e) => {
+  //   var num = markers.length;
+  //   var marker = {
+  //     position: e.latLng.toJSON(),
+  //     name:`Aglomeração #${num}`,
+  //     type:`tipo #${num}`
+  //   };
+  //   if (markers.length)
+  //     setMarkers([...markers, marker])
+  //   else
+  //   setMarkers([marker])
     
-  }
+  // }
+
+  // const handleCallback = (m) =>{
+  //   setMarkers(m);
+  // } 
+
   return isLoaded ? (
     <div>
       <GoogleMap
@@ -103,7 +126,7 @@ function App() {
         zoom={14}
         onLoad={onLoad}
         onUnmount={onUnmount}
-        onClick={addMarker}
+        // onClick={addMarker}
         options={mapOptions}
       >
         <Header />
@@ -133,7 +156,12 @@ function App() {
             }}
           />
         </StandaloneSearchBox>
-        {markers.map((m, i) => (
+        <PopulateMap 
+          bounds={bounds}
+          markers={markers}
+          loaded={loaded}
+        />
+        {/* {markers.map((m, i) => (
           <Marker 
             key={i}
             onLoad={onMarkerLoad} 
@@ -145,7 +173,6 @@ function App() {
         {
           cardVisible?
           <CardAglomeracao
-            key={0}
             name={cardName}
             type={cardType}
             info={[
@@ -155,7 +182,7 @@ function App() {
             options={anchor}
           />:
           <></>
-        }
+        } */}
       </GoogleMap>
     </div>
   ) : <></>
