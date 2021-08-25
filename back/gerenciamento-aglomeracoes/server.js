@@ -10,7 +10,7 @@ app.use(cors());
 
 app.use(express.urlencoded({extended: true}))
 
-var keys = JSON.parse(fs.readFileSync('../keys.json'))
+var keys = JSON.parse(fs.readFileSync('./keys.json'))
 
 app.listen(3030,function() {
     console.log('listening on 3030')

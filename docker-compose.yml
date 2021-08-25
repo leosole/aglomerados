@@ -1,12 +1,26 @@
 version: '3'
 services:
-  app:
+  frontend:
     build:
       context: ./front
       dockerfile: Dockerfile
     ports:
-      - "3001:3000"
+      - "3000:3000"
     container_name: aglomerados-frontend
     volumes:
       #  - .:/front
        - /front/node_modules
+  
+  backend:
+    build:
+      context: ./back/gerenciamento-aglomeracoes
+      dockerfile: Dockerfile
+    container_name: aglomerados-backend
+    command: npm start
+    # command: bash -c "python backend/manage.py makemigrations && python backend/manage.py migrate && python backend/manage.py runserver 0.0.0.0:8000"
+    # command: bash -c "node gerenciamento-aglomeracoes/server.js"
+    volumes:
+      # - .:/back/gerenciamento-aglomeracoes
+      - /back/gerenciamento-aglomeracoes/node_modules
+    ports:
+      - "3030:3030"

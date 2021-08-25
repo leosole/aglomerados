@@ -17,6 +17,8 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    fontFamily: ['Capriola', 'sans-serif'],
+    fontWeight: 'bold',
   },
 }));
 
@@ -31,7 +33,7 @@ export default function Header() {
             <MenuIcon />
           </IconButton> */}
           <Typography variant="h6" className={classes.title}>
-            Aglomerados
+            aglomerados
           </Typography>
           <Button color="inherit">Login</Button>
         </Toolbar>
