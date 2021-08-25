@@ -1,16 +1,19 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const cors = require('cors');
+// const bodyParser = require('body-parser');
 const fs = require('fs')
 const app = express();
 const { MongoClient } = require("mongodb");
 var ObjectId = require('mongodb').ObjectId
 
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(cors());
 
-var keys = JSON.parse(fs.readFileSync('./keys.json'))
+app.use(express.urlencoded({extended: true}))
 
-app.listen(3000,function() {
-    console.log('listening on 3000')
+var keys = JSON.parse(fs.readFileSync('../keys.json'))
+
+app.listen(3030,function() {
+    console.log('listening on 3030')
 
 })
 
@@ -39,10 +42,24 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
   const gatheringsCollection = db.collection('gatherings')
 
   //Create
-  app.post('/gatherings-create', (req, res) => {
+  app.post('/gatherings', (req, res) => {
     //dummy userid just to test
-    req.body.UserId = 1,
-    gatheringsCollection.insertOne(req.body)
+    req.body.UserId = 1
+    const data = {
+        userId: req.body.userId,
+        name: req.body.name,
+        position: {
+            lat: parseFloat(req.body.latitude),
+            lng: parseFloat(req.body.longitude)
+        },
+        info: [
+            {
+                key: 'descrição', 
+                value: req.body.description
+            }
+        ]
+    }
+    gatheringsCollection.insertOne(data)
                         .then(result => {
                             console.log(result)
                             res.send(result)
@@ -52,7 +69,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
    //Read
    //TODO: proper way to search for gatherings. Maybe search by latitude/longitude?
    //Or gathering name?
-   app.get('/gatherings-read', (req, res) => {
+   app.get('/gatherings', cors(), (req, res) => {
     const cursor = gatheringsCollection.find().toArray()
     .then(results => {
         //sends gatherings as a json
@@ -63,15 +80,22 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
    //Update
    //Search gathering by id and update the other fields
    //TODO: allow update of only one field at a time
-   app.post('/gatherings-update', (req, res) => {
+   app.put('/gatherings', (req, res) => {
     gatheringsCollection.findOneAndUpdate({_id: ObjectId(req.body.id),
                                            userId: req.body.userId},
                                         {
                                             $set: {
                                             name: req.body.name,
-                                            latitude: req.body.latitude,
-                                            longitude: req.body.longitude,
-                                            description: req.body.description
+                                            position: {
+                                                lat: req.body.latitude,
+                                                lng: req.body.longitude,
+                                            },
+                                            info: [
+                                                {
+                                                    key: 'descrição', 
+                                                    value: req.body.description
+                                                }
+                                            ]
                                             }
                                         },
                                         {
@@ -87,7 +111,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
                         .catch(error => console.error(error))})
     //Delete
     //TODO: delete by name/latitude and longitude or by user maybe
-    app.delete('/gatherings-delete', (req, res) => {
+    app.delete('/gatherings', (req, res) => {
         gatheringsCollection.deleteOne({_id: ObjectId(req.body.id),
                                         userId: req.body.userId},
                                             )
