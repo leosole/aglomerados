@@ -12,7 +12,6 @@ export default function PopulateMap(props) {
     
 
     const onMarkerLoad = (m) => {
-        console.log(m.zIndex)
         const temp = props.markers[m.zIndex];
         m.addListener("click", () => {
           setCardName(temp.name);
