@@ -1,11 +1,8 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import Button from "@material-ui/core/Button";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-
+import { Button, Input, InputLabel, FormControl } from "@material-ui/core";
+import { makeStyles, createTheme, ThemeProvider } from '@material-ui/core/styles';
+import { compose, spacing, palette, styleFunctionSx } from '@material-ui/system';
 
 const useStyles = makeStyles({
   error: {
@@ -15,24 +12,56 @@ const useStyles = makeStyles({
   button: {
     marginTop: "20px"
   },
-  form: {
-    minHeight: 200
-  }
 });
+
+const styleFunction = styleFunctionSx(compose(spacing, palette));
+
 export default function AddAglomeracaoForm(props) {
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const onSubmit = data => console.log(data);
   const classes = useStyles();
   // console.log(watch("name")); 
-
+  const theme = createTheme({
+    overrides: {
+      MuiInputBase: {
+        input: {
+          border: "1px solid #c5c5c5 !important",
+          borderRadius: 4,
+          padding: 4
+        },
+        inputMultiline: {
+          padding: 6,
+          height: "1.1876em !important",
+          width: "300px"
+        },
+        multiline :{
+          paddingTop: 4,
+          paddingBottom: 0
+        }
+      },
+      MuiInputLabel: {
+        formControl: {
+          padding: 6
+        }
+      }
+    },
+  });
+  
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+    <form onSubmit={handleSubmit(onSubmit)} >
+      <ThemeProvider theme={theme}>
       <FormControl>
-        <InputLabel htmlFor="name">Nome</InputLabel>
+        <InputLabel htmlFor="name">
+          Nome
+        </InputLabel>
         <Input 
           {...register("name", {required: true })} 
           id="name" 
-          type="text" />
+          type="text"
+          multiline={true}
+          // rows={1}
+          // maxRows={2}
+          disableUnderline={true} />
         {errors.name && <span className={classes.error}>Preencha este campo</span>}
       </FormControl>
       <br></br>
@@ -43,7 +72,9 @@ export default function AddAglomeracaoForm(props) {
           id="description"
           type="text"
           multiline={true}
-          rows={2}
+          rows={1}
+          maxRows={10}
+          disableUnderline={true}
         />
       </FormControl>
       <input 
@@ -67,6 +98,7 @@ export default function AddAglomeracaoForm(props) {
         variant="contained" >
         Enviar
       </Button>
+      </ThemeProvider>
     </form>
   );
 }
