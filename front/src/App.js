@@ -5,6 +5,8 @@ import apikey from './apikey';
 import Header from './Header';
 import api from './api';
 import PopulateMap from './PopulateMap';
+import AddAglomeracaoCard from './AddAglomeracaoCard';
+import AddAglomeracaoForm from './AddAglomeracaoForm';
 
 const url = '/gatherings/';
 
@@ -43,7 +45,9 @@ function App() {
   const [center, setCenter] = React.useState(initialCenter);
   const [bounds, setBounds] = React.useState(null);
   const [loaded, setLoaded] = React.useState(false)
-  
+  const [newAglomeracao, setNewAglomeracao] = React.useState(null);
+  const [aglomeracaoCard, setAglomeracaoCard] = React.useState(null);
+
   const getMarkers = () =>{
     api.get(url)
     .then((r) =>{
@@ -88,33 +92,20 @@ function App() {
     getMarkers();
   }
 
-  // const onMarkerLoad = (m) => {
-  //   const info = markers[m.zIndex];
-  //   m.addListener("click", () => {
-  //     setCardType(info.type);
-  //     setCardName(info.name);
-  //     setAnchor({anchor: m})
-  //     setCardVisible(true);
-  //   })
-  // }
-
-  // const addMarker = (e) => {
-  //   var num = markers.length;
-  //   var marker = {
-  //     position: e.latLng.toJSON(),
-  //     name:`Aglomeração #${num}`,
-  //     type:`tipo #${num}`
-  //   };
-  //   if (markers.length)
-  //     setMarkers([...markers, marker])
-  //   else
-  //   setMarkers([marker])
-    
-  // }
-
-  // const handleCallback = (m) =>{
-  //   setMarkers(m);
-  // } 
+  const addAglomeracao = (e) => {
+    var info = {
+      position: e.latLng.toJSON(),
+      latitude: e.latLng.toJSON().lat,
+      longitude: e.latLng.toJSON().lng
+    };
+    setNewAglomeracao(info)
+    if (aglomeracaoCard) {
+      aglomeracaoCard.open({
+        position: info.position,
+        map: map
+      })
+    }
+  }
 
   return isLoaded ? (
     <div>
@@ -126,7 +117,7 @@ function App() {
         zoom={14}
         onLoad={onLoad}
         onUnmount={onUnmount}
-        // onClick={addMarker}
+        onClick={addAglomeracao}
         options={mapOptions}
       >
         <Header />
@@ -161,28 +152,16 @@ function App() {
           markers={markers}
           loaded={loaded}
         />
-        {/* {markers.map((m, i) => (
-          <Marker 
-            key={i}
-            onLoad={onMarkerLoad} 
-            position={m.position} 
-            zIndex={i}
-            clickable={true}
-          />
-        ))}
         {
-          cardVisible?
-          <CardAglomeracao
-            name={cardName}
-            type={cardType}
-            info={[
-              {key:"Hora", value:"20:00"},
-              {key:"Outra chave", value:"teste"}
-            ]}
-            options={anchor}
-          />:
+          newAglomeracao?
+          <AddAglomeracaoCard
+            position={newAglomeracao.position}
+            latitude={newAglomeracao.latitude}
+            longitude={newAglomeracao.longitude}
+            returnRef={(ref) => setAglomeracaoCard(ref)}
+          /> :
           <></>
-        } */}
+        }
       </GoogleMap>
     </div>
   ) : <></>
