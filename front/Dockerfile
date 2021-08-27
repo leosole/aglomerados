@@ -1,8 +1,7 @@
 FROM node:16
 
-WORKDIR /front
+WORKDIR /
 
-# ENV PATH /front/node_modules/.bin:$PATH
 
 COPY package.json /front/package.json
 COPY . /front
