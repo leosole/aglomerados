@@ -8,7 +8,7 @@ services:
       - "3000:3000"
     container_name: aglomerados-frontend
     volumes:
-      #  - .:/front
+       - ./front:/front
        - /front/node_modules
   
   backend:
@@ -20,7 +20,7 @@ services:
     # command: bash -c "python backend/manage.py makemigrations && python backend/manage.py migrate && python backend/manage.py runserver 0.0.0.0:8000"
     # command: bash -c "node gerenciamento-aglomeracoes/server.js"
     volumes:
-      # - .:/back/gerenciamento-aglomeracoes
+      - ./back/gerenciamento-aglomeracoes:/back/gerenciamento-aglomeracoes
       - /back/gerenciamento-aglomeracoes/node_modules
     ports:
       - "3030:3030"
