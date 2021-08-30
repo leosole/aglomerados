@@ -88,7 +88,7 @@ function App() {
   }
 
   const onBoundsChanged = () => {
-    setBounds(map.getBounds());
+    setBounds(map.getBounds())
     getMarkers();
   }
 
@@ -105,6 +105,13 @@ function App() {
         map: map
       })
     }
+  }
+
+  const refresh = () => {
+    setNewAglomeracao(null)
+    aglomeracaoCard.close()
+    setAglomeracaoCard(null)
+    getMarkers()
   }
 
   return isLoaded ? (
@@ -159,6 +166,7 @@ function App() {
             latitude={newAglomeracao.latitude}
             longitude={newAglomeracao.longitude}
             returnRef={(ref) => setAglomeracaoCard(ref)}
+            returnRefresh={() => refresh()}
           /> :
           <></>
         }
