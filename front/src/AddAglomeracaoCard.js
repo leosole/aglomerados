@@ -32,6 +32,7 @@ export default function AddAglomeracaoCard(props) {
           <AddAglomeracaoForm
             latitude={props.latitude}  
             longitude={props.longitude}  
+            returnClick={() => props.returnRefresh()}
           />
         </CardContent>
       </Card>

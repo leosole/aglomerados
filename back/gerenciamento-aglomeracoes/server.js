@@ -9,6 +9,7 @@ var ObjectId = require('mongodb').ObjectId
 app.use(cors());
 
 app.use(express.urlencoded({extended: true}))
+app.use(express.json())
 
 var keys = JSON.parse(fs.readFileSync('./keys.json'))
 
@@ -59,10 +60,11 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
             }
         ]
     }
+    console.log(req.body)
     gatheringsCollection.insertOne(data)
                         .then(result => {
                             console.log(result)
-                            res.send(result)
+                            res.send({result,data})
                         })
                         .catch(error => console.error(error))})
 

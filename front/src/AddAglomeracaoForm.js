@@ -2,7 +2,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input, InputLabel, FormControl } from "@material-ui/core";
 import { makeStyles, createTheme, ThemeProvider } from '@material-ui/core/styles';
-import { compose, spacing, palette, styleFunctionSx } from '@material-ui/system';
+import api from "./api";
+
+const url = '/gatherings';
 
 const useStyles = makeStyles({
   error: {
@@ -14,13 +16,10 @@ const useStyles = makeStyles({
   },
 });
 
-const styleFunction = styleFunctionSx(compose(spacing, palette));
-
 export default function AddAglomeracaoForm(props) {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  const onSubmit = data => console.log(data);
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const classes = useStyles();
-  // console.log(watch("name")); 
+   
   const theme = createTheme({
     overrides: {
       MuiInputBase: {
@@ -47,6 +46,15 @@ export default function AddAglomeracaoForm(props) {
     },
   });
   
+  const onSubmit = (body) => {
+    console.log(body)
+    api.post(url, body)
+    .then((r) =>{
+      console.log(r)
+    })
+    .catch((e) => console.log(e))
+    .finally(() => props.returnClick())
+  }
   return (
     <form onSubmit={handleSubmit(onSubmit)} >
       <ThemeProvider theme={theme}>
@@ -59,8 +67,6 @@ export default function AddAglomeracaoForm(props) {
           id="name" 
           type="text"
           multiline={true}
-          // rows={1}
-          // maxRows={2}
           disableUnderline={true} />
         {errors.name && <span className={classes.error}>Preencha este campo</span>}
       </FormControl>
@@ -72,7 +78,6 @@ export default function AddAglomeracaoForm(props) {
           id="description"
           type="text"
           multiline={true}
-          rows={1}
           maxRows={10}
           disableUnderline={true}
         />
@@ -90,6 +95,14 @@ export default function AddAglomeracaoForm(props) {
         id="longitude"
         type="number"
         hidden />
+
+      <input 
+        {...register("userId", { required: true })} 
+        value={1}
+        id="userId"
+        type="number"
+        hidden />
+
       <br></br>
       <Button 
         className={classes.button}

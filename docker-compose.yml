@@ -17,8 +17,6 @@ services:
       dockerfile: Dockerfile
     container_name: aglomerados-backend
     command: npm start
-    # command: bash -c "python backend/manage.py makemigrations && python backend/manage.py migrate && python backend/manage.py runserver 0.0.0.0:8000"
-    # command: bash -c "node gerenciamento-aglomeracoes/server.js"
     volumes:
       - ./back/gerenciamento-aglomeracoes:/back/gerenciamento-aglomeracoes
       - /back/gerenciamento-aglomeracoes/node_modules
