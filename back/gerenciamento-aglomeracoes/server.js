@@ -56,11 +56,13 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
         info: [
             {
                 key: 'descrição', 
-                value: req.body.description
+                value: req.body.description,
+                key: 'dias_semana',
+                value: req.body.weekdays
             }
-        ]
+        ],
     }
-    console.log(req.body)
+    console.log(req.body);
     gatheringsCollection.insertOne(data)
                         .then(result => {
                             console.log(result)
