@@ -4,6 +4,7 @@ const cors = require('cors');
 const fs = require('fs')
 const app = express();
 const { MongoClient } = require("mongodb");
+const helper = require('./helperFunctions.js');
 var ObjectId = require('mongodb').ObjectId
 
 app.use(cors());
@@ -74,11 +75,27 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
    app.get('/gatherings', cors(), (req, res) => {
     const cursor = gatheringsCollection.find().toArray()
     .then(results => {
-        //sends gatherings as a json
-        console.log(results)
-        res.send(results)     
+        //sends gatherings as a jsons
+        console.log(results.filter(gathering => filterCriteria(req.query,gathering)))
+        res.send(results.filter(gathering => filterCriteria(req.query,gathering)))     
     })
-        console.log(cursor)})
+    //    console.log(cursor)
+    })
+
+    function filterCriteria(value,gathering) {
+
+        var finalResult = true
+        //filter by geolocation
+        if(value.latitude && value.longitude && value.maxDistance)
+        {
+            var dist = helper.calcDistance(value.latitude, value.longitude,gathering.position.lat, gathering.position.lng)
+            console.log(dist)
+            if(dist > value.maxDistance)
+                finalResult = false
+        }
+        //add other filters here
+        return finalResult;
+    }
    //Update
    //Search gathering by id and update the other fields
    //TODO: allow update of only one field at a time
