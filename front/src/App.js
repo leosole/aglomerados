@@ -19,6 +19,8 @@ const initialCenter = {
   lat: -22.861992298362203,
   lng: -43.22865199868578
 };
+
+const maxSearchDistance = 0.5; //km
 const libraries = ['places']
 
 const mapOptions = {
@@ -56,6 +58,16 @@ function App() {
     .catch((e) => console.log(e))
   }
 
+  const getFilteredMarkers = (lat,lng) =>{
+    var requestUrl = url+ "?lat="+ lat+"&lng=" + lng + "&maxDistance=" + maxSearchDistance;
+    console.log(requestUrl)
+    api.get(requestUrl)
+    .then((r) =>{
+      loadMarkers(r.data)
+    })
+    .catch((e) => console.log(e))
+  }
+
   const loadMarkers = (data) => {
     data.map((m) => {
       m.position.lat = parseFloat(m.position.lat)
@@ -84,6 +96,9 @@ function App() {
       .geocode({ placeId: place.place_id })
       .then(({ results }) => {
         setCenter(results[0].geometry.location);
+        getFilteredMarkers(results[0].geometry.location.lat(),results[0].geometry.location.lng());
+        console.log("mudou")
+        console.log(results[0].geometry.location)
       })
   }
 
