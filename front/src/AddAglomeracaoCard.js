@@ -8,26 +8,27 @@ import AddAglomeracaoForm from "./AddAglomeracaoForm";
 
 const useStyles = makeStyles({
   root: {
-    minWidth: 275,
     minHeight: 230,
+    maxWidth: 300
+  },
+  title: {
+    marginBottom: 6
   }
 });
 
 export default function AddAglomeracaoCard(props) {
   const classes = useStyles();
-  const onLoad = (ref) => {
-    props.returnRef(ref)
-  }
 
   return (
     <InfoWindow 
       position={props.position}
-      onLoad={onLoad}
+      onLoad={(ref) => props.returnRef(ref)}
+      onClose={() => props.returnRefresh()}
     >
       <Card className={classes.root}>
         <CardContent>
-          <Typography variant="h5" component="h2">
-            Adicione uma aglomeração aqui
+          <Typography variant="h5" component="h2" className={classes.title}>
+            Adicione uma aglomeração
           </Typography>
           <AddAglomeracaoForm
             latitude={props.latitude}  
