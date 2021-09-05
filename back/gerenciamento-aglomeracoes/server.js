@@ -5,7 +5,8 @@ const fs = require('fs')
 const app = express();
 const { MongoClient } = require("mongodb");
 const helper = require('./helperFunctions.js');
-var ObjectId = require('mongodb').ObjectId
+var ObjectId = require('mongodb').ObjectId;
+const { query } = require('express');
 
 app.use(cors());
 
@@ -45,7 +46,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
 
   //Create
   app.post('/gatherings', (req, res) => {
-    //dummy userid just to test
+    //dummy userid while user management is not available
     req.body.UserId = 1
     const data = {
         userId: req.body.userId,
@@ -76,22 +77,25 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
     const cursor = gatheringsCollection.find().toArray()
     .then(results => {
         //sends gatherings as a jsons
-        console.log(results.filter(gathering => filterCriteria(req.query,gathering)))
         res.send(results.filter(gathering => filterCriteria(req.query,gathering)))     
     })
-    //    console.log(cursor)
     })
 
     function filterCriteria(value,gathering) {
 
-        var finalResult = true
+        var finalResult = false
         //filter by geolocation
-        if(value.latitude && value.longitude && value.maxDistance)
+        console.log(value)
+        if(value.minLat && value.minLng && value.maxLat&& value.maxLng )
         {
-            var dist = helper.calcDistance(value.latitude, value.longitude,gathering.position.lat, gathering.position.lng)
-            console.log(dist)
-            if(dist > value.maxDistance)
-                finalResult = false
+            //TODO: Avoid querying the same areas multiple times, maybe query only when there is a substantial deplacement
+            if(parseFloat(gathering.position.lat) < parseFloat(value.maxLat)
+                && parseFloat(gathering.position.lat) > parseFloat(value.minLat)
+                && parseFloat(gathering.position.lng) < parseFloat(value.maxLng)
+                && parseFloat(gathering.position.lng) > parseFloat(value.minLng))
+                {
+                    finalResult = true
+                }
         }
         //add other filters here
         return finalResult;

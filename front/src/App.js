@@ -20,7 +20,6 @@ const initialCenter = {
   lng: -43.22865199868578
 };
 
-const maxSearchDistance = 0.5; //km
 const libraries = ['places']
 
 const mapOptions = {
@@ -50,17 +49,8 @@ function App() {
   const [newAglomeracao, setNewAglomeracao] = React.useState(null);
   const [aglomeracaoCard, setAglomeracaoCard] = React.useState(null);
 
-  const getMarkers = () =>{
-    api.get(url)
-    .then((r) =>{
-      loadMarkers(r.data)
-    })
-    .catch((e) => console.log(e))
-  }
-
-  const getFilteredMarkers = (lat,lng) =>{
-    var requestUrl = url+ "?lat="+ lat+"&lng=" + lng + "&maxDistance=" + maxSearchDistance;
-    console.log(requestUrl)
+  const getFilteredMarkers = (minLat,maxLat,minLng,maxLng) =>{
+    var requestUrl = url+ "?minLat="+ minLat+"&maxLat="+ maxLat+"&minLng=" + minLng +"&maxLng=" + maxLng;
     api.get(requestUrl)
     .then((r) =>{
       loadMarkers(r.data)
@@ -82,7 +72,6 @@ function App() {
   const onLoad = React.useCallback(function callback(map) {
     setMap(map)
     setBounds(map.getBounds());
-    getMarkers();
   }, [])
 
   const onUnmount = React.useCallback(function callback(map) {
@@ -96,15 +85,17 @@ function App() {
       .geocode({ placeId: place.place_id })
       .then(({ results }) => {
         setCenter(results[0].geometry.location);
-        getFilteredMarkers(results[0].geometry.location.lat(),results[0].geometry.location.lng());
-        console.log("mudou")
         console.log(results[0].geometry.location)
       })
   }
 
   const onBoundsChanged = () => {
     setBounds(map.getBounds())
-    getMarkers();
+    var minLat = map.getBounds().tc.g;
+    var maxLat = map.getBounds().tc.i;
+    var maxLng = map.getBounds().Hb.i;
+    var minLng = map.getBounds().Hb.g;
+    getFilteredMarkers(minLat,maxLat,minLng,maxLng);
   }
 
   const addAglomeracao = (e) => {
@@ -126,7 +117,11 @@ function App() {
     setNewAglomeracao(null)
     aglomeracaoCard.close()
     setAglomeracaoCard(null)
-    getMarkers()
+    var minLat = map.getBounds().tc.g;
+    var maxLat = map.getBounds().tc.i;
+    var maxLng = map.getBounds().Hb.i;
+    var minLng = map.getBounds().Hb.g;
+    getFilteredMarkers(minLat,maxLat,minLng,maxLng);
   }
 
   return isLoaded ? (
