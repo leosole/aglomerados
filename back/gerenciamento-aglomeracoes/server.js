@@ -4,7 +4,9 @@ const cors = require('cors');
 const fs = require('fs')
 const app = express();
 const { MongoClient } = require("mongodb");
-var ObjectId = require('mongodb').ObjectId
+const helper = require('./helperFunctions.js');
+var ObjectId = require('mongodb').ObjectId;
+const { query } = require('express');
 
 app.use(cors());
 
@@ -44,7 +46,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
 
   //Create
   app.post('/gatherings', (req, res) => {
-    //dummy userid just to test
+    //dummy userid while user management is not available
     req.body.UserId = 1
     const data = {
         userId: req.body.userId,
@@ -74,11 +76,30 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
    app.get('/gatherings', cors(), (req, res) => {
     const cursor = gatheringsCollection.find().toArray()
     .then(results => {
-        //sends gatherings as a json
-        console.log(results)
-        res.send(results)     
+        //sends gatherings as a jsons
+        res.send(results.filter(gathering => filterCriteria(req.query,gathering)))     
     })
-        console.log(cursor)})
+    })
+
+    function filterCriteria(value,gathering) {
+
+        var finalResult = false
+        //filter by geolocation
+        console.log(value)
+        if(value.minLat && value.minLng && value.maxLat&& value.maxLng )
+        {
+            //TODO: Avoid querying the same areas multiple times, maybe query only when there is a substantial deplacement
+            if(parseFloat(gathering.position.lat) < parseFloat(value.maxLat)
+                && parseFloat(gathering.position.lat) > parseFloat(value.minLat)
+                && parseFloat(gathering.position.lng) < parseFloat(value.maxLng)
+                && parseFloat(gathering.position.lng) > parseFloat(value.minLng))
+                {
+                    finalResult = true
+                }
+        }
+        //add other filters here
+        return finalResult;
+    }
    //Update
    //Search gathering by id and update the other fields
    //TODO: allow update of only one field at a time

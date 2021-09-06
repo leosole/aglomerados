@@ -18,6 +18,7 @@ const initialCenter = {
   lat: -22.861992298362203,
   lng: -43.22865199868578
 };
+
 const libraries = ['places']
 
 const mapOptions = {
@@ -47,9 +48,9 @@ function App() {
   const [newAglomeracao, setNewAglomeracao] = React.useState(null);
   const [aglomeracaoCard, setAglomeracaoCard] = React.useState(null);
 
-  const getMarkers = () =>{
-    console.log('0')
-    api.get(url)
+  const getFilteredMarkers = (minLat,maxLat,minLng,maxLng) =>{
+    var requestUrl = url+ "?minLat="+ minLat+"&maxLat="+ maxLat+"&minLng=" + minLng +"&maxLng=" + maxLng;
+    api.get(requestUrl)
     .then((r) =>{
       loadMarkers(r.data)
     })
@@ -71,7 +72,6 @@ function App() {
   const onLoad = React.useCallback(function callback(map) {
     setMap(map)
     setBounds(map.getBounds());
-    getMarkers();
   }, [])
 
   const onUnmount = React.useCallback(function callback(map) {
@@ -85,12 +85,17 @@ function App() {
       .geocode({ placeId: place.place_id })
       .then(({ results }) => {
         setCenter(results[0].geometry.location);
+        console.log(results[0].geometry.location)
       })
   }
 
   const onTilesLoaded = () => {
     setBounds(map.getBounds())
-    getMarkers();
+    var minLat = map.getBounds().tc.g;
+    var maxLat = map.getBounds().tc.i;
+    var maxLng = map.getBounds().Hb.i;
+    var minLng = map.getBounds().Hb.g;
+    getFilteredMarkers(minLat,maxLat,minLng,maxLng);
   }
 
   const addAglomeracao = (e) => {
@@ -112,7 +117,11 @@ function App() {
     setNewAglomeracao(null)
     aglomeracaoCard.close()
     setAglomeracaoCard(null)
-    getMarkers()
+    var minLat = map.getBounds().tc.g;
+    var maxLat = map.getBounds().tc.i;
+    var maxLng = map.getBounds().Hb.i;
+    var minLng = map.getBounds().Hb.g;
+    getFilteredMarkers(minLat,maxLat,minLng,maxLng);
   }
 
   return isLoaded ? (
