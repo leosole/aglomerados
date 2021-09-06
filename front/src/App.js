@@ -48,6 +48,7 @@ function App() {
   const [aglomeracaoCard, setAglomeracaoCard] = React.useState(null);
 
   const getMarkers = () =>{
+    console.log('0')
     api.get(url)
     .then((r) =>{
       loadMarkers(r.data)
@@ -87,7 +88,7 @@ function App() {
       })
   }
 
-  const onBoundsChanged = () => {
+  const onTilesLoaded = () => {
     setBounds(map.getBounds())
     getMarkers();
   }
@@ -118,7 +119,7 @@ function App() {
     <div>
       <GoogleMap
         id='map'
-        onBoundsChanged={onBoundsChanged}
+        onTilesLoaded={onTilesLoaded}
         mapContainerStyle={containerStyle}
         center={center}
         zoom={14}
