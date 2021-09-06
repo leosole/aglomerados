@@ -1,12 +1,11 @@
 import './App.css';
-import { GoogleMap, useJsApiLoader, StandaloneSearchBox, Marker } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, StandaloneSearchBox } from '@react-google-maps/api';
 import React from 'react'
 import apikey from './apikey';
 import Header from './Header';
 import api from './api';
 import PopulateMap from './PopulateMap';
 import AddAglomeracaoCard from './AddAglomeracaoCard';
-import AddAglomeracaoForm from './AddAglomeracaoForm';
 
 const url = '/gatherings/';
 
@@ -62,6 +61,7 @@ function App() {
     data.map((m) => {
       m.position.lat = parseFloat(m.position.lat)
       m.position.lng = parseFloat(m.position.lng)
+      return m
     })
     setMarkers(data)
     setLoaded(true)
@@ -89,7 +89,7 @@ function App() {
       })
   }
 
-  const onBoundsChanged = () => {
+  const onTilesLoaded = () => {
     setBounds(map.getBounds())
     var minLat = map.getBounds().tc.g;
     var maxLat = map.getBounds().tc.i;
@@ -128,7 +128,7 @@ function App() {
     <div>
       <GoogleMap
         id='map'
-        onBoundsChanged={onBoundsChanged}
+        onTilesLoaded={onTilesLoaded}
         mapContainerStyle={containerStyle}
         center={center}
         zoom={14}

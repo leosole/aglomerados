@@ -22,20 +22,24 @@ export default function AddAglomeracaoForm(props) {
    
   const theme = createTheme({
     overrides: {
+      MuiFormControl: {
+        root: {
+          width: "100%"
+        }
+      },
       MuiInputBase: {
         input: {
           border: "1px solid #c5c5c5 !important",
           borderRadius: 4,
-          padding: 4
+          padding: 4,
         },
         inputMultiline: {
-          padding: 6,
+          padding: 16,
           height: "1.1876em !important",
-          width: "300px"
         },
         multiline :{
           paddingTop: 4,
-          paddingBottom: 0
+          paddingBottom: 0,
         }
       },
       MuiInputLabel: {
@@ -55,6 +59,7 @@ export default function AddAglomeracaoForm(props) {
     .catch((e) => console.log(e))
     .finally(() => props.returnClick())
   }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} >
       <ThemeProvider theme={theme}>
@@ -79,18 +84,17 @@ export default function AddAglomeracaoForm(props) {
           type="text"
           multiline={true}
           maxRows={10}
-          disableUnderline={true}
-        />
+          disableUnderline={true} />
       </FormControl>
       <input 
-        {...register("latitude", { required: true })} 
+        {...register("latitude", { required: true, value: props.latitude })} 
         value={props.latitude}
         id="latitude"
         type="number"
         hidden />
 
       <input 
-        {...register("longitude", { required: true })} 
+        {...register("longitude", { required: true, value: props.longitude })} 
         value={props.longitude}
         id="longitude"
         type="number"
@@ -108,7 +112,9 @@ export default function AddAglomeracaoForm(props) {
         className={classes.button}
         type="submit"
         color="primary"
-        variant="contained" >
+        variant="contained" 
+        fullWidth={true}
+      >
         Enviar
       </Button>
       </ThemeProvider>
