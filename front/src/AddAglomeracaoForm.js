@@ -1,25 +1,38 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Button, Input, InputLabel, FormControl } from "@material-ui/core";
-import { makeStyles, createTheme, ThemeProvider } from '@material-ui/core/styles';
+import { Button, InputLabel, FormControl, Select, MenuItem, TextField, FormLabel, FormGroup, Checkbox, FormControlLabel, RadioGroup, Radio } from "@material-ui/core";
+import { DatePicker,  LocalizationProvider, TimePicker } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import moment from 'moment'
 import api from "./api";
 
 const url = '/gatherings';
 
-const useStyles = makeStyles({
-  error: {
-    color: "red",
-    fontSize: "0.8em"
-  },
-  button: {
-    marginTop: "20px"
-  },
-});
-
 export default function AddAglomeracaoForm(props) {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const classes = useStyles();
-   
+  // const classes = useStyles();
+  const [frequency, setFrequency] = React.useState(null);
+  const [date, setDate] = React.useState(new Date());
+  const [time, setTime] = React.useState(new Date());
+  const [gender, setGender] = React.useState(true);
+  const [week, setWeek] = React.useState({
+    domingo:false,
+    segunda:false,
+    terca:false,
+    quarta:false,
+    quinta:false,
+    sexta:false,
+    sabado:false
+  });
+
+  const handleCheck = (e) => {
+    setWeek({
+      ...week,
+      [e.target.name]: e.target.checked,
+    });
+  };
+
   const theme = createTheme({
     overrides: {
       MuiFormControl: {
@@ -29,7 +42,7 @@ export default function AddAglomeracaoForm(props) {
       },
       MuiInputBase: {
         input: {
-          border: "1px solid #c5c5c5 !important",
+          border: "1px solid #c5c5c5 ",
           borderRadius: 4,
           padding: 4,
         },
@@ -49,41 +62,215 @@ export default function AddAglomeracaoForm(props) {
       }
     },
   });
+
+  const showFrequency = () => {
+    switch(frequency){
+      case 'único':
+        return (
+          <FormControl 
+            margin="normal"
+            fullWidth={true}
+            >
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Data"
+                value={date}
+                onChange={(newDate) => {
+                  setDate(newDate)
+                }}
+                renderInput={(props) => ( <TextField {...props} /> )}
+              />
+            </LocalizationProvider>
+            {errors.name && <span>Preencha este campo</span>}
+          </FormControl>
+        )
+      case 'semanal':
+        return (
+          <FormControl 
+            margin="normal"
+            fullWidth={true}
+            >
+            <FormLabel component="legend">Dia da semana</FormLabel>
+            <FormGroup row >
+              <FormControlLabel
+                control={
+                  <Checkbox checked={week.domingo} onChange={handleCheck} name="domingo" />
+                }
+                label="Domingo"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox checked={week.segunda} onChange={handleCheck} name="segunda" />
+                }
+                label="2ª"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox checked={week.terca} onChange={handleCheck} name="terca" />
+                }
+                label="3ª"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox checked={week.quarta} onChange={handleCheck} name="quarta" />
+                }
+                label="4ª"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox checked={week.quinta} onChange={handleCheck} name="quinta" />
+                }
+                label="5ª"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox checked={week.sexta} onChange={handleCheck} name="sexta" />
+                }
+                label="6ª"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox checked={week.sabado} onChange={handleCheck} name="sabado" />
+                }
+                label="Sábado"
+              />
+            </FormGroup>
+            {errors.name && <span >Preencha este campo</span>}
+          </FormControl>
+        )
+      case 'mensal':
+        return(
+          <div>
+            <FormControl 
+              margin="normal"
+              fullWidth={true}
+              >
+              <InputLabel id="month-label"> {gender?'Todo':'Toda'} </InputLabel>
+              <Select
+                {...register("todo")} 
+                id="todo"
+                labelId="month-label"
+                label={gender?'Todo':'Toda'}
+                disableUnderline={true}
+                defaultValue="1"
+              >
+                <MenuItem value="1">{gender?'Primeiro':'Primeira'}</MenuItem>
+                <MenuItem value="2">{gender?'Segundo':'Segunda'}</MenuItem>
+                <MenuItem value="3">{gender?'Terceiro':'Terceira'}</MenuItem>
+                <MenuItem value="4">{gender?'Último':'Última'}</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl 
+              margin="dense"
+              fullWidth={true}
+              >
+              <Select
+                {...register("month")} 
+                id="month"
+                labelId="month-label"
+                defaultValue="domingo"
+                disableUnderline={true}
+                onChange={(e) => setGender(e.target.value.at(-1) === 'o'? true:false)}
+              >
+                <MenuItem value="domingo">Domingo do mes</MenuItem>
+                <MenuItem value="segunda">Segunda do mes</MenuItem>
+                <MenuItem value="terca">Terça do mes</MenuItem>
+                <MenuItem value="quarta">Quarta do mes</MenuItem>
+                <MenuItem value="quinta">Quinta do mes</MenuItem>
+                <MenuItem value="sexta">Sexta do mes</MenuItem>
+                <MenuItem value="sabado">Sábado do mes</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        )
+      default:
+        return <></>
+    }
+  }
   
   const onSubmit = (body) => {
+    body.week = week
+    body.time = moment(time).format('H:m')
+    if(date) 
+      body.date = moment(date).format('D/M/YYYY')
     console.log(body)
-    api.post(url, body)
-    .then((r) =>{
-      console.log(r)
-    })
-    .catch((e) => console.log(e))
-    .finally(() => props.returnClick())
+    // console.log(week)
+    // api.post(url, body)
+    // .then((r) =>{
+    //   console.log(r)
+    // })
+    // .catch((e) => console.log(e))
+    // .finally(() => props.returnClick())
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} >
       <ThemeProvider theme={theme}>
-      <FormControl>
-        <InputLabel htmlFor="name">
-          Nome
-        </InputLabel>
-        <Input 
+      <FormControl 
+        margin="normal"
+        fullWidth={true}
+        >
+        <TextField 
+          label="Nome"
           {...register("name", {required: true })} 
           id="name" 
           type="text"
           multiline={true}
           disableUnderline={true} />
-        {errors.name && <span className={classes.error}>Preencha este campo</span>}
+        {errors.name && <span >Preencha este campo</span>}
       </FormControl>
-      <br></br>
-      <FormControl>
-        <InputLabel htmlFor="description">Descrição</InputLabel>
-        <Input 
+
+      <FormControl 
+        margin="normal"
+        fullWidth={true}
+        >
+        <InputLabel id="frequency-label">
+          Frequência  
+        </InputLabel>
+        <Select
+          {...register("frequencia", {required: true })} 
+          id="frequency"
+          labelId="frequency-label"
+          label="Frequência"
+          disableUnderline={true}
+          onChange={(e) => setFrequency(e.target.value)}
+        >
+          <MenuItem value="único">Único</MenuItem>
+          <MenuItem value="semanal">Semanal</MenuItem>
+          <MenuItem value="mensal">Mensal</MenuItem>
+        </Select>
+        {errors.name && <span >Preencha este campo</span>}
+      </FormControl>
+
+      {showFrequency()}
+
+      <FormControl 
+        margin="normal"
+        fullWidth={true}
+        >
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <TimePicker
+            label="Hora"
+            value={time}
+            onChange={(newTime) => {
+              setTime(newTime);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+      </FormControl>
+
+      <FormControl
+        margin="normal"
+        variant="filled"
+        fullWidth={true}
+        >
+        <TextField 
+          label="Descrição"
           {...register("description")} 
           id="description"
           type="text"
-          multiline={true}
-          maxRows={10}
+          // multiline={true}
           disableUnderline={true} />
       </FormControl>
       <input 
@@ -107,9 +294,7 @@ export default function AddAglomeracaoForm(props) {
         type="number"
         hidden />
 
-      <br></br>
       <Button 
-        className={classes.button}
         type="submit"
         color="primary"
         variant="contained" 

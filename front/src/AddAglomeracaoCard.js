@@ -1,23 +1,12 @@
 import { InfoWindow } from "@react-google-maps/api";
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import AddAglomeracaoForm from "./AddAglomeracaoForm";
 
-const useStyles = makeStyles({
-  root: {
-    minHeight: 230,
-    maxWidth: 300
-  },
-  title: {
-    marginBottom: 6
-  }
-});
 
 export default function AddAglomeracaoCard(props) {
-  const classes = useStyles();
 
   return (
     <InfoWindow 
@@ -25,9 +14,9 @@ export default function AddAglomeracaoCard(props) {
       onLoad={(ref) => props.returnRef(ref)}
       onClose={() => props.returnRefresh()}
     >
-      <Card className={classes.root}>
+      <Card >
         <CardContent>
-          <Typography variant="h5" component="h2" className={classes.title}>
+          <Typography variant="h5" component="h2">
             Adicione uma aglomeração
           </Typography>
           <AddAglomeracaoForm
