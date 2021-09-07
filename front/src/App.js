@@ -1,5 +1,8 @@
 import './App.css';
 import { GoogleMap, useJsApiLoader, StandaloneSearchBox } from '@react-google-maps/api';
+import { FilledInput, InputAdornment } from '@material-ui/core';
+import { makeStyles, createTheme, ThemeProvider } from '@material-ui/core/styles';
+import SearchIcon from '@material-ui/icons/Search';
 import React from 'react'
 import apikey from './apikey';
 import Header from './Header';
@@ -47,6 +50,15 @@ function App() {
   const [loaded, setLoaded] = React.useState(false)
   const [newAglomeracao, setNewAglomeracao] = React.useState(null);
   const [aglomeracaoCard, setAglomeracaoCard] = React.useState(null);
+  const theme = createTheme({
+    overrides: {
+      MuiFilledInput: {
+        input: {
+          padding: "12px"
+        }
+      }
+    },
+  });
 
   const getFilteredMarkers = (minLat,maxLat,minLng,maxLng) =>{
     var requestUrl = url+ "?minLat="+ minLat+"&maxLat="+ maxLat+"&minLng=" + minLng +"&maxLng=" + maxLng;
@@ -138,32 +150,41 @@ function App() {
         options={mapOptions}
       >
         <Header />
-        <StandaloneSearchBox
-          onLoad={(ref) => (searchBox.current = ref)}
-          onPlacesChanged={onPlacesChanged}
-          bounds={bounds}
-        >
-          <input
-            type="text"
-            placeholder="🔍"
-            style={{
-              boxSizing: 'border-box',
-              border: '1px solid transparent',
-              width: '320px',
-              height: '40px',
-              padding: '0 12px',
-              borderRadius: '3px',
-              boxShadow: '2px 4px 8px rgba(0, 0, 0, 0.3)',
-              fontSize: '14px',
-              outline: 'none',
-              textOverflow: 'ellipses',
-              position: "absolute",
-              left: "50%",
-              top: "80px",
-              marginLeft: "-160px"
-            }}
-          />
-        </StandaloneSearchBox>
+        <ThemeProvider theme={theme}>
+          <StandaloneSearchBox
+            onLoad={(ref) => (searchBox.current = ref)}
+            onPlacesChanged={onPlacesChanged}
+            bounds={bounds}
+          >
+            <FilledInput
+              disableUnderline={true}
+              type="search"
+              placeholder="Pesquise aqui"
+              style={{
+                backgroundColor: '#fff',
+                boxSizing: 'border-box',
+                border: '1px solid transparent',
+                width: '320px',
+                // height: '40px',
+                padding: '6px 16px',
+                borderRadius: '3px',
+                boxShadow: '2px 4px 8px rgba(0, 0, 0, 0.3)',
+                fontSize: '14px',
+                outline: 'none',
+                textOverflow: 'ellipses',
+                position: "absolute",
+                left: "50%",
+                top: "80px",
+                marginLeft: "-160px"
+              }}
+              startAdornment={
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              }
+            />
+          </StandaloneSearchBox>
+        </ThemeProvider>
         <PopulateMap 
           bounds={bounds}
           markers={markers}
