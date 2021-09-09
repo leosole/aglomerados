@@ -9,6 +9,7 @@ import Header from './Header';
 import api from './api';
 import PopulateMap from './PopulateMap';
 import AddAglomeracaoCard from './AddAglomeracaoCard';
+import CreateProfileDrawer from './CreateProfileDrawer';
 
 const url = '/gatherings/';
 
@@ -50,6 +51,8 @@ function App() {
   const [loaded, setLoaded] = React.useState(false)
   const [newAglomeracao, setNewAglomeracao] = React.useState(null);
   const [aglomeracaoCard, setAglomeracaoCard] = React.useState(null);
+  const [isCreateProfileOpen, setIsCreateProfileOpen] = React.useState(false)
+
   const theme = createTheme({
     overrides: {
       
@@ -61,6 +64,8 @@ function App() {
       }
     },
   });
+
+  const openCreateProfileDrawer = () => setIsCreateProfileOpen(!isCreateProfileOpen)
 
   const getFilteredMarkers = (minLat,maxLat,minLng,maxLng) =>{
     var requestUrl = url+ "?minLat="+ minLat+"&maxLat="+ maxLat+"&minLng=" + minLng +"&maxLng=" + maxLng;
@@ -151,7 +156,10 @@ function App() {
         onClick={addAglomeracao}
         options={mapOptions}
       >
-        <Header />
+        <Header openCreateProfileDrawer={openCreateProfileDrawer} />
+        <CreateProfileDrawer 
+          isOpen={isCreateProfileOpen} 
+          setIsCreateProfileOpen={setIsCreateProfileOpen} />
         <ThemeProvider theme={theme}>
           <StandaloneSearchBox
             onLoad={(ref) => (searchBox.current = ref)}

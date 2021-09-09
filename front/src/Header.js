@@ -13,7 +13,7 @@ const theme = createTheme({
 });
 
 
-export default function Header() {
+export default function Header(props) {
 
   return (
     <ThemeProvider theme={theme}> 
@@ -22,7 +22,12 @@ export default function Header() {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             aglomerados
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Button 
+            color="inherit"
+            onClick={props.openCreateProfileDrawer}
+          >
+            Login
+          </Button>
         </Toolbar>
       </AppBar>
     </ThemeProvider>
