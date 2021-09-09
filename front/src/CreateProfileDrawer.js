@@ -21,8 +21,8 @@ export default function CreateProfileDrawer(props){
             MuiPaper: {
                 styleOverrides:{
                     root: {
-                        minWidth: '30%',
-                        maxWidth: '980%',
+                        minWidth: 400,
+                        maxWidth: '30vw',
                         padding: 32  
                     }
                 }
@@ -72,41 +72,43 @@ export default function CreateProfileDrawer(props){
                 </DrawerHeader>
                 <Typography variant="h5" >Crie seu perfil</Typography>
                 <form onSubmit={handleSubmit(onSubmit)} >
-                    <FormControl 
+                    <TextField 
                         margin="normal"
                         fullWidth={true}
-                        >
-                        <TextField 
-                            label="Nome"
-                            {...register("name", {required: true })} 
-                            id="name" 
-                            type="text"
-                            multiline={true}
-                            disableUnderline={true} />
-                        {errors.name && <span >Preencha este campo</span>}
-                    </FormControl>
+                        label="Nome"
+                        {...register("name", {required: true })} 
+                        id="name" 
+                        type="text"
+                        disableUnderline={true} />
+                    {errors.name && <span >Preencha este campo</span>}
 
-                    <FormControl 
+                    <TextField 
                         margin="normal"
                         fullWidth={true}
-                        >
-                        <TextField 
-                            label="E-mail"
-                            {...register("email", {required: true })} 
-                            id="email" 
-                            type="mail"
-                            multiline={true}
-                            disableUnderline={true} />
-                        {errors.name && <span >Preencha este campo</span>}
-                    </FormControl>
+                        label="E-mail"
+                        {...register("email", {required: true })} 
+                        id="email" 
+                        type="email"
+                        disableUnderline={true} />
+                    {errors.email && <span >Preencha este campo</span>}
+
+                    <TextField 
+                        margin="normal"
+                        fullWidth={true}
+                        label="Senha"
+                        {...register("password", {required: true })} 
+                        id="password" 
+                        type="password"
+                        disableUnderline={true} />
+                    {errors.password && <span >Preencha este campo</span>}
 
                     <Button 
                         type="submit"
-                        color="primary"
+                        color="secondary"
                         variant="contained" 
                         fullWidth={true}
                     >
-                        Enviar
+                        Cadastrar
                     </Button>
                 </form>
             </Drawer>

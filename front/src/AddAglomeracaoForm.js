@@ -80,7 +80,6 @@ export default function AddAglomeracaoForm(props) {
                 renderInput={(props) => ( <TextField {...props} /> )}
               />
             </LocalizationProvider>
-            {errors.name && <span>Preencha este campo</span>}
           </FormControl>
         )
       case 'semanal':
@@ -134,7 +133,6 @@ export default function AddAglomeracaoForm(props) {
                 label="Sábado"
               />
             </FormGroup>
-            {errors.name && <span >Preencha este campo</span>}
           </FormControl>
         )
       case 'mensal':
@@ -239,7 +237,7 @@ export default function AddAglomeracaoForm(props) {
           <MenuItem value="semanal">Semanal</MenuItem>
           <MenuItem value="mensal">Mensal</MenuItem>
         </Select>
-        {errors.name && <span >Preencha este campo</span>}
+        {errors.frequency && <span >Preencha este campo</span>}
       </FormControl>
 
       {showFrequency()}
@@ -296,7 +294,7 @@ export default function AddAglomeracaoForm(props) {
 
       <Button 
         type="submit"
-        color="primary"
+        color="secondary"
         variant="contained" 
         fullWidth={true}
       >

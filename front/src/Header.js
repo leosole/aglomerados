@@ -26,7 +26,7 @@ export default function Header(props) {
             color="inherit"
             onClick={props.openCreateProfileDrawer}
           >
-            Login
+            Cadastre-se
           </Button>
         </Toolbar>
       </AppBar>
