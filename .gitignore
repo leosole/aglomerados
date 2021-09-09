@@ -30,3 +30,4 @@ keys.json
 /front/src/apikey.js
 
 node_modules
+package-lock.json

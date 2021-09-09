@@ -1,7 +1,7 @@
 import './App.css';
 import { GoogleMap, useJsApiLoader, StandaloneSearchBox } from '@react-google-maps/api';
-import { FilledInput, InputAdornment } from '@material-ui/core';
-import { makeStyles, createTheme, ThemeProvider } from '@material-ui/core/styles';
+import { Input, InputAdornment } from '@material-ui/core';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import React from 'react'
 import apikey from './apikey';
@@ -52,10 +52,12 @@ function App() {
   const [aglomeracaoCard, setAglomeracaoCard] = React.useState(null);
   const theme = createTheme({
     overrides: {
-      MuiFilledInput: {
+      
+      MuiInputBase: {
         input: {
+          border: "0 ",
           padding: "12px"
-        }
+        },
       }
     },
   });
@@ -156,7 +158,7 @@ function App() {
             onPlacesChanged={onPlacesChanged}
             bounds={bounds}
           >
-            <FilledInput
+            <Input
               disableUnderline={true}
               type="search"
               placeholder="Pesquise aqui"
