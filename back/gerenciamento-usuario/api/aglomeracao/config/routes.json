@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/aglomeracaos",
+      "handler": "aglomeracao.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/aglomeracaos/count",
+      "handler": "aglomeracao.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/aglomeracaos/:id",
+      "handler": "aglomeracao.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/aglomeracaos",
+      "handler": "aglomeracao.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/aglomeracaos/:id",
+      "handler": "aglomeracao.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/aglomeracaos/:id",
+      "handler": "aglomeracao.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}
