@@ -144,14 +144,15 @@ export default function AddAglomeracaoForm(props) {
               margin="normal"
               fullWidth={true}
               >
-              <InputLabel id="month-label"> {gender?'Todo':'Toda'} </InputLabel>
+              <InputLabel id="todo-label"> {gender?'Todo':'Toda'} </InputLabel>
               <Select
                 {...register("todo")} 
                 id="todo"
-                labelId="month-label"
+                labelId="todo-label"
                 label={gender?'Todo':'Toda'}
                 disableUnderline={true}
-                defaultValue="1"
+                // defaultValue="1"
+                placeholder="Todo(a)"
               >
                 <MenuItem value="1">{gender?'Primeiro':'Primeira'}</MenuItem>
                 <MenuItem value="2">{gender?'Segundo':'Segunda'}</MenuItem>
@@ -162,14 +163,16 @@ export default function AddAglomeracaoForm(props) {
             <FormControl 
               margin="dense"
               fullWidth={true}
-              >
+            >
+              <InputLabel id="month-label"> Dia da semana</InputLabel>
               <Select
                 {...register("month")} 
                 id="month"
                 labelId="month-label"
-                defaultValue="domingo"
+                label="Dia da semana"
+                // defaultValue="domingo"
                 disableUnderline={true}
-                onChange={(e) => setGender(e.target.value.at(-1) === 'o'? true:false)}
+                onChange={(e) => setGender(e.target.value.at(-1) === 'o')}
               >
                 <MenuItem value="domingo">Domingo do mes</MenuItem>
                 <MenuItem value="segunda">Segunda do mes</MenuItem>
