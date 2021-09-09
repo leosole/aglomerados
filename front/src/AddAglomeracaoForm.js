@@ -11,7 +11,6 @@ const url = '/gatherings';
 
 export default function AddAglomeracaoForm(props) {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  // const classes = useStyles();
   const [frequency, setFrequency] = React.useState(null);
   const [date, setDate] = React.useState(new Date());
   const [time, setTime] = React.useState(new Date());
@@ -193,14 +192,12 @@ export default function AddAglomeracaoForm(props) {
     body.time = moment(time).format('H:m')
     if(date) 
       body.date = moment(date).format('D/M/YYYY')
-    console.log(body)
-    // console.log(week)
-    // api.post(url, body)
-    // .then((r) =>{
-    //   console.log(r)
-    // })
-    // .catch((e) => console.log(e))
-    // .finally(() => props.returnClick())
+    api.post(url, body)
+    .then((r) =>{
+      console.log(r)
+    })
+    .catch((e) => console.log(e))
+    .finally(() => props.returnClick())
   }
 
   return (
