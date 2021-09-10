@@ -216,15 +216,14 @@ function App() {
           loaded={loaded}
         />
         {
-          newAglomeracao?
+          newAglomeracao &&
           <AddAglomeracaoCard
             position={newAglomeracao.position}
             latitude={newAglomeracao.latitude}
             longitude={newAglomeracao.longitude}
             returnRef={(ref) => setAglomeracaoCard(ref)}
             returnRefresh={() => refresh()}
-          /> :
-          <></>
+          /> 
         }
       </GoogleMap>
     </div>
