@@ -15,6 +15,41 @@ const theme = createTheme({
 
 export default function Header(props) {
 
+  const showButtons = (isLoggedIn) => isLoggedIn?
+  (
+    <div>
+      <Button 
+        color="inherit"
+        // onClick={props.openProfileDrawer}
+      >
+        Perfil
+      </Button>
+      <Button 
+        color="inherit"
+        onClick={props.logOff}
+      >
+        Sair
+      </Button>
+    </div>
+  )
+  :
+  (
+    <div>
+      <Button 
+        color="inherit"
+        onClick={props.openCreateProfileDrawer}
+      >
+        Cadastre-se
+      </Button>
+      <Button 
+        color="inherit"
+        onClick={props.openLogInDrawer}
+      >
+        Login
+      </Button>
+    </div>
+  )
+
   return (
     <ThemeProvider theme={theme}> 
       <AppBar position="sticky">
@@ -22,12 +57,7 @@ export default function Header(props) {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             aglomerados
           </Typography>
-          <Button 
-            color="inherit"
-            onClick={props.openCreateProfileDrawer}
-          >
-            Cadastre-se
-          </Button>
+          {showButtons(props.isLoggedIn)}
         </Toolbar>
       </AppBar>
     </ThemeProvider>

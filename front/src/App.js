@@ -10,6 +10,7 @@ import api from './api';
 import PopulateMap from './PopulateMap';
 import AddAglomeracaoCard from './AddAglomeracaoCard';
 import CreateProfileDrawer from './CreateProfileDrawer';
+import LogInDrawer from './LogInDrawer';
 
 const url = '/gatherings/';
 
@@ -44,14 +45,16 @@ function App() {
   })
 
   var empty = []
-  const [markers, setMarkers] = React.useState(empty);
-  const [map, setMap] = React.useState(null);
-  const [center, setCenter] = React.useState(initialCenter);
-  const [bounds, setBounds] = React.useState(null);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false)
+  const [markers, setMarkers] = React.useState(empty)
+  const [map, setMap] = React.useState(null)
+  const [center, setCenter] = React.useState(initialCenter)
+  const [bounds, setBounds] = React.useState(null)
   const [loaded, setLoaded] = React.useState(false)
-  const [newAglomeracao, setNewAglomeracao] = React.useState(null);
+  const [newAglomeracao, setNewAglomeracao] = React.useState(null)
   const [aglomeracaoCard, setAglomeracaoCard] = React.useState(null);
   const [isCreateProfileOpen, setIsCreateProfileOpen] = React.useState(false)
+  const [isLogInDrawerOpen, setIsLogInDrawerOpen] = React.useState(false)
 
   const theme = createTheme({
     overrides: {
@@ -65,7 +68,11 @@ function App() {
     },
   });
 
+  const logOff = () => setIsLoggedIn(false)
+  const logIn = () => setIsLoggedIn(true)
+
   const openCreateProfileDrawer = () => setIsCreateProfileOpen(!isCreateProfileOpen)
+  const openLogInDrawer = () => setIsLogInDrawerOpen(!isLogInDrawerOpen)
 
   const getFilteredMarkers = (minLat,maxLat,minLng,maxLng) =>{
     var requestUrl = url+ "?minLat="+ minLat+"&maxLat="+ maxLat+"&minLng=" + minLng +"&maxLng=" + maxLng;
@@ -156,10 +163,18 @@ function App() {
         onClick={addAglomeracao}
         options={mapOptions}
       >
-        <Header openCreateProfileDrawer={openCreateProfileDrawer} />
+        <Header 
+          openCreateProfileDrawer={openCreateProfileDrawer}
+          openLogInDrawer={openLogInDrawer}
+          isLoggedIn={isLoggedIn}
+          logOff={logOff}
+          logIn={logIn} />
         <CreateProfileDrawer 
           isOpen={isCreateProfileOpen} 
           setIsCreateProfileOpen={setIsCreateProfileOpen} />
+        <LogInDrawer 
+          isOpen={isLogInDrawerOpen} 
+          setIsCreateProfileOpen={setIsLogInDrawerOpen} />
         <ThemeProvider theme={theme}>
           <StandaloneSearchBox
             onLoad={(ref) => (searchBox.current = ref)}
