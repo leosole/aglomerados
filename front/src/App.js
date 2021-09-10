@@ -150,7 +150,7 @@ function App() {
     getFilteredMarkers(minLat,maxLat,minLng,maxLng);
   }
 
-  return isLoaded ? (
+  return isLoaded && (
     <div>
       <GoogleMap
         id='map'
@@ -216,19 +216,18 @@ function App() {
           loaded={loaded}
         />
         {
-          newAglomeracao?
+          newAglomeracao &&
           <AddAglomeracaoCard
             position={newAglomeracao.position}
             latitude={newAglomeracao.latitude}
             longitude={newAglomeracao.longitude}
             returnRef={(ref) => setAglomeracaoCard(ref)}
             returnRefresh={() => refresh()}
-          /> :
-          <></>
+          /> 
         }
       </GoogleMap>
     </div>
-  ) : <></>
+  ) 
 }
 
 export default App;
