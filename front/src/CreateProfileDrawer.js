@@ -50,13 +50,14 @@ export default function CreateProfileDrawer(props){
 
     const onSubmit = (body) => {
         console.log(body)
-        // {\n  \"username\": \"usuario2\",\n  \"email\": \"usuario2@aglomerado.com\",\n  \"password\": \"string\",\n  \"confirmed\": true,\n  \"blocked\": false\n}
-        // apiUser.post(urlUser, body)
-        // .then((r) =>{
-        //     console.log(r)
-        // })
-        // .catch((e) => console.log(e))
-        // .finally(() => props.returnClick())
+        apiUser.post(urlUser, body)
+        .then((r) => {
+            console.log(r.data)
+            props.setUser(r.data)
+            props.logIn()
+            props.setIsCreateProfileOpen(false)
+        })
+        .catch((e) => console.log(e))
     }
 
     return (
@@ -77,8 +78,8 @@ export default function CreateProfileDrawer(props){
                         margin="normal"
                         fullWidth={true}
                         label="Nome"
-                        {...register("name", {required: true })} 
-                        id="name" 
+                        {...register("username", {required: true })} 
+                        id="username" 
                         type="text"
                         disableUnderline={true} />
                     {errors.name && <span >Preencha este campo</span>}

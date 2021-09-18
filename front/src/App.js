@@ -56,6 +56,7 @@ function App() {
   const [aglomeracaoCard, setAglomeracaoCard] = React.useState(null);
   const [isCreateProfileOpen, setIsCreateProfileOpen] = React.useState(false)
   const [isLogInDrawerOpen, setIsLogInDrawerOpen] = React.useState(false)
+  const [user, setUser] = React.useState(null)
 
   const theme = createTheme({
     overrides: {
@@ -126,6 +127,8 @@ function App() {
   }
 
   const addAglomeracao = (e) => {
+    if(!isLoggedIn)
+      return    
     var info = {
       position: e.latLng.toJSON(),
       latitude: e.latLng.toJSON().lat,
@@ -172,14 +175,17 @@ function App() {
           openCreateProfileDrawer={openCreateProfileDrawer}
           openLogInDrawer={openLogInDrawer}
           isLoggedIn={isLoggedIn}
-          logOff={logOff}
-          logIn={logIn} />
+          logOff={logOff} />
         <CreateProfileDrawer 
           isOpen={isCreateProfileOpen} 
-          setIsCreateProfileOpen={setIsCreateProfileOpen} />
+          setIsCreateProfileOpen={setIsCreateProfileOpen}
+          setUser={setUser}
+          logIn={logIn} />
         <LogInDrawer 
           isOpen={isLogInDrawerOpen} 
-          setIsCreateProfileOpen={setIsLogInDrawerOpen} />
+          setIsCreateProfileOpen={setIsLogInDrawerOpen}
+          setUser={setUser}
+          logIn={logIn} />
         <ThemeProvider theme={theme}>
           <StandaloneSearchBox
             onLoad={(ref) => (searchBox.current = ref)}
@@ -223,6 +229,7 @@ function App() {
         {
           newAglomeracao &&
           <AddAglomeracaoCard
+            user={user}
             position={newAglomeracao.position}
             latitude={newAglomeracao.latitude}
             longitude={newAglomeracao.longitude}
