@@ -3,18 +3,18 @@ import { Drawer, Typography } from '@mui/material';
 import { Button, InputLabel, FormControl, TextField, FormLabel, FormGroup, IconButton  } from "@material-ui/core";
 import { createTheme, ThemeProvider, styled } from '@material-ui/core/styles';
 import { useForm } from "react-hook-form";
-import api from './api';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import apiUser from './apiUser';
 export default function CreateProfileDrawer(props){
-
+    const urlUser = 'auth/local/register'
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const theme = createTheme({
         typography: {
-            fontFamily: ['Capriola', 'sans-serif'].join(','),
-            fontWeight: 'bold',
             h5: {
-                textAlign: 'center'
+                textAlign: 'center',
+                fontFamily: ['Capriola', 'sans-serif'].join(','),
+                fontWeight: 'bold',
             }
         },
         components: {
@@ -50,7 +50,8 @@ export default function CreateProfileDrawer(props){
 
     const onSubmit = (body) => {
         console.log(body)
-        // api.post(url, body)
+        // {\n  \"username\": \"usuario2\",\n  \"email\": \"usuario2@aglomerado.com\",\n  \"password\": \"string\",\n  \"confirmed\": true,\n  \"blocked\": false\n}
+        // apiUser.post(urlUser, body)
         // .then((r) =>{
         //     console.log(r)
         // })

@@ -6,14 +6,14 @@ import SearchIcon from '@material-ui/icons/Search';
 import React from 'react'
 import apikey from './apikey';
 import Header from './Header';
-import api from './api';
+import apiAglomeracao from './apiAglomeracao';
 import PopulateMap from './PopulateMap';
 import AddAglomeracaoCard from './AddAglomeracaoCard';
 import CreateProfileDrawer from './CreateProfileDrawer';
 import LogInDrawer from './LogInDrawer';
 import localization from './localization';
 
-const url = '/gatherings/';
+const urlAglomeracao = '/gatherings/';
 
 const containerStyle = {
   width: '100vw',
@@ -76,8 +76,8 @@ function App() {
   const openLogInDrawer = () => setIsLogInDrawerOpen(!isLogInDrawerOpen)
 
   const getFilteredMarkers = (minLat,maxLat,minLng,maxLng) =>{
-    var requestUrl = url+ "?minLat="+ minLat+"&maxLat="+ maxLat+"&minLng=" + minLng +"&maxLng=" + maxLng;
-    api.get(requestUrl)
+    var requestUrl = urlAglomeracao+ "?minLat="+ minLat+"&maxLat="+ maxLat+"&minLng=" + minLng +"&maxLng=" + maxLng;
+    apiAglomeracao.get(requestUrl)
     .then((r) =>{
       loadMarkers(r.data)
     })

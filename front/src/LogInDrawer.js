@@ -3,7 +3,7 @@ import { Drawer, Typography } from '@mui/material';
 import { Button, InputLabel, FormControl, TextField, FormLabel, FormGroup, IconButton  } from "@material-ui/core";
 import { createTheme, ThemeProvider, styled } from '@material-ui/core/styles';
 import { useForm } from "react-hook-form";
-import api from './api';
+import apiAglomeracao from './apiAglomeracao';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 export default function LogInDrawer(props){
 
@@ -11,9 +11,9 @@ export default function LogInDrawer(props){
 
     const theme = createTheme({
         typography: {
-            fontFamily: ['Capriola', 'sans-serif'].join(','),
-            fontWeight: 'bold',
             h5: {
+                fontFamily: ['Capriola', 'sans-serif'].join(','),
+                fontWeight: 'bold',
                 textAlign: 'center'
             }
         },
@@ -50,7 +50,7 @@ export default function LogInDrawer(props){
 
     const onSubmit = (body) => {
         console.log(body)
-        // api.post(url, body)
+        // apiAglomeracao.post(url, body)
         // .then((r) =>{
         //     console.log(r)
         // })
