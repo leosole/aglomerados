@@ -11,6 +11,7 @@ import PopulateMap from './PopulateMap';
 import AddAglomeracaoCard from './AddAglomeracaoCard';
 import CreateProfileDrawer from './CreateProfileDrawer';
 import LogInDrawer from './LogInDrawer';
+import localization from './localization';
 
 const url = '/gatherings/';
 
@@ -150,6 +151,10 @@ function App() {
     getFilteredMarkers(minLat,maxLat,minLng,maxLng);
   }
 
+  React.useEffect(() => {
+    localization(setCenter)
+  }, [])
+    
   return isLoaded && (
     <div>
       <GoogleMap
