@@ -60,9 +60,23 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
                 key: 'descrição', 
                 value: req.body.description
             }
-        ]
+        ],
+        frequency: {
+            sunday: req.body.week.sunday,
+            monday: req.body.week.monday,
+            tuesday: req.body.week.tuesday,
+            wednesday: req.body.week.wednesday,
+            thursday: req.body.week.thursday,
+            friday: req.body.week.friday,
+            saturday: req.body.week.saturday,
+            monthWeek: req.body.todo,
+            monthWeekDay: req.body.month
+            },
+            time: req.body.time,
+            creationDate: req.body.date 
     }
     console.log(req.body)
+    console.log(data)
     gatheringsCollection.insertOne(data)
                         .then(result => {
                             console.log(result)
@@ -71,8 +85,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
                         .catch(error => console.error(error))})
 
    //Read
-   //TODO: proper way to search for gatherings. Maybe search by latitude/longitude?
-   //Or gathering name?
+   //TODO: improve filtering: category, name, user etc
    app.get('/gatherings', cors(), (req, res) => {
     const cursor = gatheringsCollection.find().toArray()
     .then(results => {
@@ -85,7 +98,6 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
 
         var finalResult = false
         //filter by geolocation
-        console.log(value)
         if(value.minLat && value.minLng && value.maxLat&& value.maxLng )
         {
             //TODO: Avoid querying the same areas multiple times, maybe query only when there is a substantial deplacement
