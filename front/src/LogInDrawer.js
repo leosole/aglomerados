@@ -3,17 +3,19 @@ import { Drawer, Typography } from '@mui/material';
 import { Button, InputLabel, FormControl, TextField, FormLabel, FormGroup, IconButton  } from "@material-ui/core";
 import { createTheme, ThemeProvider, styled } from '@material-ui/core/styles';
 import { useForm } from "react-hook-form";
-import api from './api';
+import apiUser from './apiUser';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+
 export default function LogInDrawer(props){
 
+    const urlUser = 'auth/local'
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const theme = createTheme({
         typography: {
-            fontFamily: ['Capriola', 'sans-serif'].join(','),
-            fontWeight: 'bold',
             h5: {
+                fontFamily: ['Capriola', 'sans-serif'].join(','),
+                fontWeight: 'bold',
                 textAlign: 'center'
             }
         },
@@ -50,12 +52,14 @@ export default function LogInDrawer(props){
 
     const onSubmit = (body) => {
         console.log(body)
-        // api.post(url, body)
-        // .then((r) =>{
-        //     console.log(r)
-        // })
-        // .catch((e) => console.log(e))
-        // .finally(() => props.returnClick())
+        apiUser.post(urlUser, body)
+        .then((r) => {
+            console.log(r.data)
+            props.setUser(r.data)
+            props.logIn()
+            props.setIsCreateProfileOpen(false)
+        })
+        .catch((e) => console.log(e))
     }
 
     return (
@@ -75,9 +79,9 @@ export default function LogInDrawer(props){
                     <TextField 
                         margin="normal"
                         fullWidth={true}
-                        label="Usuário"
-                        {...register("user", {required: true })} 
-                        id="user" 
+                        label="E-mail"
+                        {...register("identifier", {required: true })} 
+                        id="identifier" 
                         type="text"
                         disableUnderline={true} />
                     {errors.user && <span >Preencha este campo</span>}

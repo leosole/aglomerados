@@ -5,9 +5,9 @@ import { DatePicker,  LocalizationProvider, TimePicker } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import moment from 'moment'
-import api from "./api";
+import apiAglomeracao from "./apiAglomeracao";
 
-const url = '/gatherings';
+const urlAglomeracao = '/gatherings';
 
 export default function AddAglomeracaoForm(props) {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -193,7 +193,7 @@ export default function AddAglomeracaoForm(props) {
     body.time = moment(time).format('H:m')
     if(date) 
       body.date = moment(date).format('D/M/YYYY')
-    api.post(url, body)
+    apiAglomeracao.post(urlAglomeracao, body)
     .then((r) =>{
       console.log(r)
     })
