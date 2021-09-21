@@ -96,7 +96,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
 
     function filterCriteria(value,gathering) {
 
-        var finalResult = false
+        var geolocFilter = false
         //filter by geolocation
         if(value.minLat && value.minLng && value.maxLat&& value.maxLng )
         {
@@ -106,11 +106,40 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
                 && parseFloat(gathering.position.lng) < parseFloat(value.maxLng)
                 && parseFloat(gathering.position.lng) > parseFloat(value.minLng))
                 {
-                    finalResult = true
+                    geolocFilter = true
                 }
         }
+        //filter by day of the week
+        frequencyFilter = true
+        if(value.week.monday  || value.week.tuesday  ||value.week.wednesday ||value.week.thursday ||value.week.friday ||value.week.saturday ||value.week.sunday )
+        {
+            frequencyFilter = false
+            if(value.week.monday && (gathering.frequency.monday || gathering.monthWeekDay == "monday"))
+                frequencyFilter = true
+            if(value.week.tuesday && (gathering.frequency.tuesday || gathering.monthWeekDay == "tuesday"))
+                frequencyFilter = true
+            if(value.week.wednesday && (gathering.frequency.wednesday || gathering.monthWeekDay == "wednesday"))
+                frequencyFilter = true
+            if(value.week.thursday && (gathering.frequency.thursday|| gathering.monthWeekDay == "thursday"))
+                frequencyFilter = true
+            if(value.week.friday && (gathering.frequency.friday || gathering.monthWeekDay == "friday"))
+                frequencyFilter = true
+            if(value.week.saturday && (gathering.frequency.saturday || gathering.monthWeekDay == "saturday"))
+                frequencyFilter = true
+            if(value.week.sunday && (gathering.frequency.sunday || gathering.monthWeekDay == "sunday"))
+                frequencyFilter = true
+        }
+
+        //filter by time
+        timeFilter = true
+        if(value.minTime && value.maxTime )
+            timeFilter = false
+            if(gathering.time < value.maxTime && gathering.time > value.minTime )
+                timeFilter = true
+
+      
         //add other filters here
-        return finalResult;
+        return geolocFilter && frequencyFilter && timeFilter;
     }
    //Update
    //Search gathering by id and update the other fields
