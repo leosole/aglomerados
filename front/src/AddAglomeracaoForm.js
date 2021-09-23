@@ -16,13 +16,13 @@ export default function AddAglomeracaoForm(props) {
   const [time, setTime] = React.useState(new Date());
   const [gender, setGender] = React.useState(true);
   const [week, setWeek] = React.useState({
-    domingo:false,
-    segunda:false,
-    terca:false,
-    quarta:false,
-    quinta:false,
-    sexta:false,
-    sabado:false
+    sunday:false,
+    monday:false,
+    tuesday:false,
+    wednesday:false,
+    thursday:false,
+    friday:false,
+    saturday:false
   });
 
   const handleCheck = (e) => {
@@ -92,43 +92,43 @@ export default function AddAglomeracaoForm(props) {
             <FormGroup row >
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.domingo} onChange={handleCheck} name="domingo" />
+                  <Checkbox checked={week.sunday} onChange={handleCheck} name="sunday" />
                 }
                 label="Domingo"
               />
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.segunda} onChange={handleCheck} name="segunda" />
+                  <Checkbox checked={week.monday} onChange={handleCheck} name="monday" />
                 }
                 label="2ª"
               />
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.terca} onChange={handleCheck} name="terca" />
+                  <Checkbox checked={week.tuesday} onChange={handleCheck} name="tuesday" />
                 }
                 label="3ª"
               />
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.quarta} onChange={handleCheck} name="quarta" />
+                  <Checkbox checked={week.wednesday} onChange={handleCheck} name="wednesday" />
                 }
                 label="4ª"
               />
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.quinta} onChange={handleCheck} name="quinta" />
+                  <Checkbox checked={week.thursday} onChange={handleCheck} name="thursday" />
                 }
                 label="5ª"
               />
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.sexta} onChange={handleCheck} name="sexta" />
+                  <Checkbox checked={week.friday} onChange={handleCheck} name="friday" />
                 }
                 label="6ª"
               />
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.sabado} onChange={handleCheck} name="sabado" />
+                  <Checkbox checked={week.saturday} onChange={handleCheck} name="saturday" />
                 }
                 label="Sábado"
               />
@@ -172,13 +172,13 @@ export default function AddAglomeracaoForm(props) {
                 disableUnderline={true}
                 onChange={(e) => setGender(e.target.value.at(-1) === 'o')}
               >
-                <MenuItem value="domingo">Domingo do mes</MenuItem>
-                <MenuItem value="segunda">Segunda do mes</MenuItem>
-                <MenuItem value="terca">Terça do mes</MenuItem>
-                <MenuItem value="quarta">Quarta do mes</MenuItem>
-                <MenuItem value="quinta">Quinta do mes</MenuItem>
-                <MenuItem value="sexta">Sexta do mes</MenuItem>
-                <MenuItem value="sabado">Sábado do mes</MenuItem>
+                <MenuItem value="sunday">Domingo do mes</MenuItem>
+                <MenuItem value="monday">Segunda do mes</MenuItem>
+                <MenuItem value="tuesday">Terça do mes</MenuItem>
+                <MenuItem value="wednesday">Quarta do mes</MenuItem>
+                <MenuItem value="thursday">Quinta do mes</MenuItem>
+                <MenuItem value="friday">Sexta do mes</MenuItem>
+                <MenuItem value="saturday">Sábado do mes</MenuItem>
               </Select>
             </FormControl>
           </div>
