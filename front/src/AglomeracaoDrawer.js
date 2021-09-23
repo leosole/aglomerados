@@ -4,6 +4,7 @@ import { Button, InputLabel, FormControl, CardActions, CardContent, Card, IconBu
 import { createTheme, ThemeProvider, styled } from '@material-ui/core/styles';
 import { useForm } from "react-hook-form";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ShowReviews from './ShowReviews';
 
 export default function CreateProfileDrawer(props){
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -20,7 +21,7 @@ export default function CreateProfileDrawer(props){
             MuiPaper: {
                 styleOverrides:{
                     root: {
-                        minWidth: 600,
+                        minWidth: 400,
                         maxWidth: '30vw',
                         padding: 32  
                     }
@@ -77,11 +78,11 @@ export default function CreateProfileDrawer(props){
                     <CardActions>
                         <Button size="small">Compartilhar</Button>
                     </CardActions>
-                    {/* <ShowReviews
-                        id={props.id}
-                        user={props.user}
-                    /> */}
                 </Card>
+                <ShowReviews
+                    // id={props.id}
+                    // user={props.user}
+                />
             </Drawer>
         </ThemeProvider>
     )
