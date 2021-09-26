@@ -27,7 +27,7 @@ export default function CardAglomeracao(props) {
           ))}
         </CardContent>
         <CardActions>
-          <Button size="small">Compartilhar</Button>
+          <Button size="small" onClick={() => props.openAglomeracaoDrawer()}>Ver mais</Button>
         </CardActions>
       </Card>
     </InfoWindow>

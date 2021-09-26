@@ -57,6 +57,7 @@ function App() {
   const [isCreateProfileOpen, setIsCreateProfileOpen] = React.useState(false)
   const [isLogInDrawerOpen, setIsLogInDrawerOpen] = React.useState(false)
   const [user, setUser] = React.useState(null)
+  const [zoom, setZoom] = React.useState(14)
 
   const theme = createTheme({
     overrides: {
@@ -123,6 +124,7 @@ function App() {
     var maxLat = map.getBounds().tc.i;
     var maxLng = map.getBounds().Hb.i;
     var minLng = map.getBounds().Hb.g;
+    setZoom(map.getZoom())
     getFilteredMarkers(minLat,maxLat,minLng,maxLng);
   }
 
@@ -165,7 +167,7 @@ function App() {
         onTilesLoaded={onTilesLoaded}
         mapContainerStyle={containerStyle}
         center={center}
-        zoom={14}
+        zoom={zoom}
         onLoad={onLoad}
         onUnmount={onUnmount}
         onClick={addAglomeracao}
@@ -186,6 +188,7 @@ function App() {
           setIsCreateProfileOpen={setIsLogInDrawerOpen}
           setUser={setUser}
           logIn={logIn} />
+        
         <ThemeProvider theme={theme}>
           <StandaloneSearchBox
             onLoad={(ref) => (searchBox.current = ref)}
@@ -225,6 +228,8 @@ function App() {
           bounds={bounds}
           markers={markers}
           loaded={loaded}
+          setCenter={setCenter}
+          setZoom={setZoom}
         />
         {
           newAglomeracao &&
