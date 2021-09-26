@@ -225,6 +225,7 @@ function App() {
           </StandaloneSearchBox>
         </ThemeProvider>
         <PopulateMap 
+          user={user.user}
           bounds={bounds}
           markers={markers}
           loaded={loaded}
