@@ -25,7 +25,7 @@ export default function ReviewItem (props) {
                     readOnly
                     value={props.rating}
                     getLabelText={(value) => `${value} Estrela${value !== 1 ? 's' : ''}`}
-                    precision={0.1}
+                    precision={0.05}
                 />
                     <Typography variant="body" component="p">
                         {props.comment}

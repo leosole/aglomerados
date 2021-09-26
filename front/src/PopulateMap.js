@@ -53,6 +53,7 @@ export default function PopulateMap(props) {
       {
         isAglomeracaoDrawerOpen &&
         <AglomeracaoDrawer
+          user={props.user}
           name={cardName}
           info={cardInfo}
           isOpen={isAglomeracaoDrawerOpen} 
