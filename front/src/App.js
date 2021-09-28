@@ -37,14 +37,15 @@ const mapOptions = {
   },
 }
 
-function App() {
+
+function App(props) {
   
   const { isLoaded } = useJsApiLoader({
     id: 'aglomerados',
     googleMapsApiKey: apikey,
     libraries: libraries
   })
-
+  
   var empty = []
   const [isLoggedIn, setIsLoggedIn] = React.useState(false)
   const [markers, setMarkers] = React.useState(empty)
@@ -58,7 +59,6 @@ function App() {
   const [isLogInDrawerOpen, setIsLogInDrawerOpen] = React.useState(false)
   const [user, setUser] = React.useState(null)
   const [zoom, setZoom] = React.useState(14)
-
   const theme = createTheme({
     overrides: {
       
@@ -157,9 +157,13 @@ function App() {
   }
 
   React.useEffect(() => {
-    localization(setCenter)
+    console.log(props.lat)
+    if (props.lat && props.lng) {
+      setCenter({lat:parseFloat(props.lat), lng:parseFloat(props.lng)})
+    } else {
+      localization(setCenter)
+    }
   }, [])
-    
   return isLoaded && (
     <div>
       <GoogleMap
@@ -225,7 +229,8 @@ function App() {
           </StandaloneSearchBox>
         </ThemeProvider>
         <PopulateMap 
-          user={user.user}
+          id={props.id}
+          user={user?.user}
           bounds={bounds}
           markers={markers}
           loaded={loaded}

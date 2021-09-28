@@ -6,6 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
+
 export default function CardAglomeracao(props) {
 
   return (
@@ -26,8 +27,8 @@ export default function CardAglomeracao(props) {
             </div>
           ))}
         </CardContent>
-        <CardActions>
-          <Button size="small" onClick={() => props.openAglomeracaoDrawer()}>Ver mais</Button>
+        <CardActions>{props.link}
+          {/* <Button size="small" onClick={() => props.openAglomeracaoDrawer()}>Ver mais</Button> */}
         </CardActions>
       </Card>
     </InfoWindow>
