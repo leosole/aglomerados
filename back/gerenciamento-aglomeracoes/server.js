@@ -87,11 +87,24 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
    //Read
    //TODO: improve filtering: category, name, user etc
    app.get('/gatherings', cors(), (req, res) => {
-    const cursor = gatheringsCollection.find().toArray()
-    .then(results => {
-        //sends gatherings as a jsons
-        res.send(results.filter(gathering => filterCriteria(req.query,gathering)))     
-    })
+
+    if(req.query.id)
+    {
+        var good_id = new ObjectId(req.query.id)
+        const cursor = gatheringsCollection.find({_id: good_id}).toArray()
+        .then(results => {
+            //sends gatherings as a jsons
+            res.send(results)   
+        })
+    }
+    else
+    {
+        const cursor = gatheringsCollection.find().toArray()
+        .then(results => {
+            //sends gatherings as a jsons
+            res.send(results.filter(gathering => filterCriteria(req.query,gathering)))   
+        })
+    }
     })
 
     function filterCriteria(value,gathering) {
