@@ -5,6 +5,7 @@ import { createTheme, ThemeProvider, styled } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ShowReviews from './ShowReviews';
 
+
 export default function AglomeracaoDrawer(props){
 
     const theme = createTheme({
@@ -45,7 +46,6 @@ export default function AglomeracaoDrawer(props){
     }
 
     const handleDrawerClose = () => props.setIsAglomeracaoDrawerOpen(false)
-
 
     return (
         <ThemeProvider theme={theme}>
