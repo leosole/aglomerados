@@ -86,11 +86,11 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
 
    //Read
    //TODO: improve filtering: category, name, user etc
-   app.get('/gatherings', cors(), (req, res) => {
+   app.get('/gatherings:id', cors(), (req, res) => {
 
-    if(req.query.id)
+    if(req.params.id && req.params.id.length == 25)
     {
-        var good_id = new ObjectId(req.query.id)
+        var good_id = new ObjectId(req.params.id.replace(":",""))
         const cursor = gatheringsCollection.find({_id: good_id}).toArray()
         .then(results => {
             //sends gatherings as a jsons
