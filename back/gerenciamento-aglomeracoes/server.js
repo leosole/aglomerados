@@ -120,37 +120,17 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
                 {
                     geolocFilter = true
                 }
-        }
-        //filter by day of the week
-        weekFilter = true
-        if(value.week && (value.week.monday  || value.week.tuesday  ||value.week.wednesday ||value.week.thursday ||value.week.friday ||value.week.saturday ||value.week.sunday ))
-        {
-            console.log("entrou no weekfilter")
-
-            weekFilter = false
-            if(value.week.monday && (gathering.frequency.monday || gathering.monthWeekDay == "monday"))
-                weekFilter = true
-            if(value.week.tuesday && (gathering.frequency.tuesday || gathering.monthWeekDay == "tuesday"))
-                weekFilter = true
-            if(value.week.wednesday && (gathering.frequency.wednesday || gathering.monthWeekDay == "wednesday"))
-                weekFilter = true
-            if(value.week.thursday && (gathering.frequency.thursday|| gathering.monthWeekDay == "thursday"))
-                weekFilter = true
-            if(value.week.friday && (gathering.frequency.friday || gathering.monthWeekDay == "friday"))
-                weekFilter = true
-            if(value.week.saturday && (gathering.frequency.saturday || gathering.monthWeekDay == "saturday"))
-                weekFilter = true
-            if(value.week.sunday && (gathering.frequency.sunday || gathering.monthWeekDay == "sunday"))
-                weekFilter = true
-        }
-
-        //filter by day
+        };
+        
+        //filter by exact date
         dayFilter = true
         if(value.date)
         {
             console.log("entrou no dayfilter")
             dayFilter = false
             weekDay = new Date(value.date).getDay()
+            monthDay = new Date(value.date).getDate()
+
             if((weekDay == 0 && gathering.frequency.sunday)||
                (weekDay == 1 && gathering.frequency.monday)||
                (weekDay == 2 && gathering.frequency.tuesday)||
@@ -160,6 +140,24 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
                (weekDay == 6 && gathering.frequency.saturday)||
                value.date == gathering.date)
                dayFilter = true
+            else if(
+               (weekDay == 0 && gathering.frequency.monthWeekDay == "sunday")||
+               (weekDay == 1 && gathering.frequency.monthWeekDay == "monday")||
+               (weekDay == 2 && gathering.frequency.monthWeekDay == "tuesday")||
+               (weekDay == 3 && gathering.frequency.monthWeekDay == "wednesday")||
+               (weekDay == 4 && gathering.frequency.monthWeekDay == "thursday")||
+               (weekDay == 5 && gathering.frequency.monthWeekDay == "friday")||
+               (weekDay == 6 && gathering.frequency.monthWeekDay == "saturday"))
+               {
+                   if(monthDay  < 8 && gathering.frequency.monthWeek == 1)
+                    dayFilter = true
+                   else if(monthDay  < 15 && gathering.frequency.monthWeek == 2)
+                    dayFilter = true
+                   else if(monthDay  < 22 && gathering.frequency.monthWeek == 3)
+                    dayFilter = true
+                   else if(monthDay  < 29 && gathering.frequency.monthWeek == 4)
+                    dayFilter = true
+               }
         }
 
         //filter by time
@@ -175,7 +173,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
 
       
         //add other filters here
-        return geolocFilter && weekFilter && timeFilter && weekFilter &&dayFilter;
+        return geolocFilter && timeFilter && dayFilter;
     }
    //Update
    //Search gathering by id and update the other fields
