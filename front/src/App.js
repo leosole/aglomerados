@@ -6,11 +6,14 @@ import SearchIcon from '@material-ui/icons/Search';
 import React from 'react'
 import apikey from './apikey';
 import Header from './Header';
-import api from './api';
+import apiAglomeracao from './apiAglomeracao';
 import PopulateMap from './PopulateMap';
 import AddAglomeracaoCard from './AddAglomeracaoCard';
+import CreateProfileDrawer from './CreateProfileDrawer';
+import LogInDrawer from './LogInDrawer';
+import localization from './localization';
 
-const url = '/gatherings/';
+const urlAglomeracao = '/gatherings/';
 
 const containerStyle = {
   width: '100vw',
@@ -34,22 +37,28 @@ const mapOptions = {
   },
 }
 
-function App() {
+
+function App(props) {
   
   const { isLoaded } = useJsApiLoader({
     id: 'aglomerados',
     googleMapsApiKey: apikey,
     libraries: libraries
   })
-
+  
   var empty = []
-  const [markers, setMarkers] = React.useState(empty);
-  const [map, setMap] = React.useState(null);
-  const [center, setCenter] = React.useState(initialCenter);
-  const [bounds, setBounds] = React.useState(null);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false)
+  const [markers, setMarkers] = React.useState(empty)
+  const [map, setMap] = React.useState(null)
+  const [center, setCenter] = React.useState(initialCenter)
+  const [bounds, setBounds] = React.useState(null)
   const [loaded, setLoaded] = React.useState(false)
-  const [newAglomeracao, setNewAglomeracao] = React.useState(null);
+  const [newAglomeracao, setNewAglomeracao] = React.useState(null)
   const [aglomeracaoCard, setAglomeracaoCard] = React.useState(null);
+  const [isCreateProfileOpen, setIsCreateProfileOpen] = React.useState(false)
+  const [isLogInDrawerOpen, setIsLogInDrawerOpen] = React.useState(false)
+  const [user, setUser] = React.useState(null)
+  const [zoom, setZoom] = React.useState(14)
   const theme = createTheme({
     overrides: {
       
@@ -62,9 +71,15 @@ function App() {
     },
   });
 
+  const logOff = () => setIsLoggedIn(false)
+  const logIn = () => setIsLoggedIn(true)
+
+  const openCreateProfileDrawer = () => setIsCreateProfileOpen(!isCreateProfileOpen)
+  const openLogInDrawer = () => setIsLogInDrawerOpen(!isLogInDrawerOpen)
+
   const getFilteredMarkers = (minLat,maxLat,minLng,maxLng) =>{
-    var requestUrl = url+ "?minLat="+ minLat+"&maxLat="+ maxLat+"&minLng=" + minLng +"&maxLng=" + maxLng;
-    api.get(requestUrl)
+    var requestUrl = urlAglomeracao+ "?minLat="+ minLat+"&maxLat="+ maxLat+"&minLng=" + minLng +"&maxLng=" + maxLng;
+    apiAglomeracao.get(requestUrl)
     .then((r) =>{
       loadMarkers(r.data)
     })
@@ -109,10 +124,13 @@ function App() {
     var maxLat = map.getBounds().tc.i;
     var maxLng = map.getBounds().Hb.i;
     var minLng = map.getBounds().Hb.g;
+    setZoom(map.getZoom())
     getFilteredMarkers(minLat,maxLat,minLng,maxLng);
   }
 
   const addAglomeracao = (e) => {
+    if(!isLoggedIn)
+      return    
     var info = {
       position: e.latLng.toJSON(),
       latitude: e.latLng.toJSON().lat,
@@ -138,20 +156,43 @@ function App() {
     getFilteredMarkers(minLat,maxLat,minLng,maxLng);
   }
 
-  return isLoaded ? (
+  React.useEffect(() => {
+    console.log(props.lat)
+    if (props.lat && props.lng) {
+      setCenter({lat:parseFloat(props.lat), lng:parseFloat(props.lng)})
+    } else {
+      localization(setCenter)
+    }
+  }, [])
+  return isLoaded && (
     <div>
       <GoogleMap
         id='map'
         onTilesLoaded={onTilesLoaded}
         mapContainerStyle={containerStyle}
         center={center}
-        zoom={14}
+        zoom={zoom}
         onLoad={onLoad}
         onUnmount={onUnmount}
         onClick={addAglomeracao}
         options={mapOptions}
       >
-        <Header />
+        <Header 
+          openCreateProfileDrawer={openCreateProfileDrawer}
+          openLogInDrawer={openLogInDrawer}
+          isLoggedIn={isLoggedIn}
+          logOff={logOff} />
+        <CreateProfileDrawer 
+          isOpen={isCreateProfileOpen} 
+          setIsCreateProfileOpen={setIsCreateProfileOpen}
+          setUser={setUser}
+          logIn={logIn} />
+        <LogInDrawer 
+          isOpen={isLogInDrawerOpen} 
+          setIsCreateProfileOpen={setIsLogInDrawerOpen}
+          setUser={setUser}
+          logIn={logIn} />
+        
         <ThemeProvider theme={theme}>
           <StandaloneSearchBox
             onLoad={(ref) => (searchBox.current = ref)}
@@ -188,24 +229,28 @@ function App() {
           </StandaloneSearchBox>
         </ThemeProvider>
         <PopulateMap 
+          id={props.id}
+          user={user?.user}
           bounds={bounds}
           markers={markers}
           loaded={loaded}
+          setCenter={setCenter}
+          setZoom={setZoom}
         />
         {
-          newAglomeracao?
+          newAglomeracao &&
           <AddAglomeracaoCard
+            user={user}
             position={newAglomeracao.position}
             latitude={newAglomeracao.latitude}
             longitude={newAglomeracao.longitude}
             returnRef={(ref) => setAglomeracaoCard(ref)}
             returnRefresh={() => refresh()}
-          /> :
-          <></>
+          /> 
         }
       </GoogleMap>
     </div>
-  ) : <></>
+  ) 
 }
 
 export default App;

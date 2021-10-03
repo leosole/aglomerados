@@ -5,9 +5,9 @@ import { DatePicker,  LocalizationProvider, TimePicker } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import moment from 'moment'
-import api from "./api";
+import apiAglomeracao from "./apiAglomeracao";
 
-const url = '/gatherings';
+const urlAglomeracao = '/gatherings';
 
 export default function AddAglomeracaoForm(props) {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -16,13 +16,13 @@ export default function AddAglomeracaoForm(props) {
   const [time, setTime] = React.useState(new Date());
   const [gender, setGender] = React.useState(true);
   const [week, setWeek] = React.useState({
-    domingo:false,
-    segunda:false,
-    terca:false,
-    quarta:false,
-    quinta:false,
-    sexta:false,
-    sabado:false
+    sunday:false,
+    monday:false,
+    tuesday:false,
+    wednesday:false,
+    thursday:false,
+    friday:false,
+    saturday:false
   });
 
   const handleCheck = (e) => {
@@ -80,7 +80,6 @@ export default function AddAglomeracaoForm(props) {
                 renderInput={(props) => ( <TextField {...props} /> )}
               />
             </LocalizationProvider>
-            {errors.name && <span>Preencha este campo</span>}
           </FormControl>
         )
       case 'semanal':
@@ -93,48 +92,47 @@ export default function AddAglomeracaoForm(props) {
             <FormGroup row >
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.domingo} onChange={handleCheck} name="domingo" />
+                  <Checkbox checked={week.sunday} onChange={handleCheck} name="sunday" />
                 }
                 label="Domingo"
               />
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.segunda} onChange={handleCheck} name="segunda" />
+                  <Checkbox checked={week.monday} onChange={handleCheck} name="monday" />
                 }
                 label="2ª"
               />
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.terca} onChange={handleCheck} name="terca" />
+                  <Checkbox checked={week.tuesday} onChange={handleCheck} name="tuesday" />
                 }
                 label="3ª"
               />
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.quarta} onChange={handleCheck} name="quarta" />
+                  <Checkbox checked={week.wednesday} onChange={handleCheck} name="wednesday" />
                 }
                 label="4ª"
               />
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.quinta} onChange={handleCheck} name="quinta" />
+                  <Checkbox checked={week.thursday} onChange={handleCheck} name="thursday" />
                 }
                 label="5ª"
               />
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.sexta} onChange={handleCheck} name="sexta" />
+                  <Checkbox checked={week.friday} onChange={handleCheck} name="friday" />
                 }
                 label="6ª"
               />
               <FormControlLabel
                 control={
-                  <Checkbox checked={week.sabado} onChange={handleCheck} name="sabado" />
+                  <Checkbox checked={week.saturday} onChange={handleCheck} name="saturday" />
                 }
                 label="Sábado"
               />
             </FormGroup>
-            {errors.name && <span >Preencha este campo</span>}
           </FormControl>
         )
       case 'mensal':
@@ -144,14 +142,15 @@ export default function AddAglomeracaoForm(props) {
               margin="normal"
               fullWidth={true}
               >
-              <InputLabel id="month-label"> {gender?'Todo':'Toda'} </InputLabel>
+              <InputLabel id="todo-label"> {gender?'Todo':'Toda'} </InputLabel>
               <Select
                 {...register("todo")} 
                 id="todo"
-                labelId="month-label"
+                labelId="todo-label"
                 label={gender?'Todo':'Toda'}
                 disableUnderline={true}
-                defaultValue="1"
+                // defaultValue="1"
+                placeholder="Todo(a)"
               >
                 <MenuItem value="1">{gender?'Primeiro':'Primeira'}</MenuItem>
                 <MenuItem value="2">{gender?'Segundo':'Segunda'}</MenuItem>
@@ -162,22 +161,24 @@ export default function AddAglomeracaoForm(props) {
             <FormControl 
               margin="dense"
               fullWidth={true}
-              >
+            >
+              <InputLabel id="month-label"> Dia da semana</InputLabel>
               <Select
                 {...register("month")} 
                 id="month"
                 labelId="month-label"
-                defaultValue="domingo"
+                label="Dia da semana"
+                // defaultValue="domingo"
                 disableUnderline={true}
-                onChange={(e) => setGender(e.target.value.at(-1) === 'o'? true:false)}
+                onChange={(e) => setGender(e.target.value.at(-1) === 'o')}
               >
-                <MenuItem value="domingo">Domingo do mes</MenuItem>
-                <MenuItem value="segunda">Segunda do mes</MenuItem>
-                <MenuItem value="terca">Terça do mes</MenuItem>
-                <MenuItem value="quarta">Quarta do mes</MenuItem>
-                <MenuItem value="quinta">Quinta do mes</MenuItem>
-                <MenuItem value="sexta">Sexta do mes</MenuItem>
-                <MenuItem value="sabado">Sábado do mes</MenuItem>
+                <MenuItem value="sunday">Domingo do mes</MenuItem>
+                <MenuItem value="monday">Segunda do mes</MenuItem>
+                <MenuItem value="tuesday">Terça do mes</MenuItem>
+                <MenuItem value="wednesday">Quarta do mes</MenuItem>
+                <MenuItem value="thursday">Quinta do mes</MenuItem>
+                <MenuItem value="friday">Sexta do mes</MenuItem>
+                <MenuItem value="saturday">Sábado do mes</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -192,7 +193,7 @@ export default function AddAglomeracaoForm(props) {
     body.time = moment(time).format('H:m')
     if(date) 
       body.date = moment(date).format('D/M/YYYY')
-    api.post(url, body)
+    apiAglomeracao.post(urlAglomeracao, body)
     .then((r) =>{
       console.log(r)
     })
@@ -236,7 +237,7 @@ export default function AddAglomeracaoForm(props) {
           <MenuItem value="semanal">Semanal</MenuItem>
           <MenuItem value="mensal">Mensal</MenuItem>
         </Select>
-        {errors.name && <span >Preencha este campo</span>}
+        {errors.frequency && <span >Preencha este campo</span>}
       </FormControl>
 
       {showFrequency()}
@@ -293,7 +294,7 @@ export default function AddAglomeracaoForm(props) {
 
       <Button 
         type="submit"
-        color="primary"
+        color="secondary"
         variant="contained" 
         fullWidth={true}
       >

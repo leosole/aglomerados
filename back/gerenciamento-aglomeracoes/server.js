@@ -60,9 +60,23 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
                 key: 'descrição', 
                 value: req.body.description
             }
-        ]
+        ],
+        frequency: {
+            sunday: req.body.week.sunday,
+            monday: req.body.week.monday,
+            tuesday: req.body.week.tuesday,
+            wednesday: req.body.week.wednesday,
+            thursday: req.body.week.thursday,
+            friday: req.body.week.friday,
+            saturday: req.body.week.saturday,
+            monthWeek: req.body.todo,
+            monthWeekDay: req.body.month
+            },
+            time: req.body.time,
+            creationDate: req.body.date 
     }
     console.log(req.body)
+    console.log(data)
     gatheringsCollection.insertOne(data)
                         .then(result => {
                             console.log(result)
@@ -70,22 +84,32 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
                         })
                         .catch(error => console.error(error))})
 
-   //Read
-   //TODO: proper way to search for gatherings. Maybe search by latitude/longitude?
-   //Or gathering name?
+   //Read by filter
    app.get('/gatherings', cors(), (req, res) => {
-    const cursor = gatheringsCollection.find().toArray()
-    .then(results => {
-        //sends gatherings as a jsons
-        res.send(results.filter(gathering => filterCriteria(req.query,gathering)))     
+        const cursor = gatheringsCollection.find().toArray()
+        .then(results => {
+            //sends gatherings as a jsons
+            res.send(results.filter(gathering => filterCriteria(req.query,gathering)))   
+        })
     })
-    })
+    //Read by id
+    app.get('/gatherings:id', cors(), (req, res) => {
+
+        if(req.params.id && req.params.id.length == 25)
+        {
+            var good_id = new ObjectId(req.params.id.replace(":",""))
+            const cursor = gatheringsCollection.find({_id: good_id}).toArray()
+            .then(results => {
+                //sends gatherings as a jsons
+                res.send(results)   
+            })
+        }
+        })
 
     function filterCriteria(value,gathering) {
 
         var finalResult = false
         //filter by geolocation
-        console.log(value)
         if(value.minLat && value.minLng && value.maxLat&& value.maxLng )
         {
             //TODO: Avoid querying the same areas multiple times, maybe query only when there is a substantial deplacement
