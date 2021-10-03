@@ -73,7 +73,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
             monthWeekDay: req.body.month
             },
             time: req.body.time,
-            creationDate: req.body.date 
+            date: req.body.date 
     }
     console.log(req.body)
     console.log(data)
@@ -108,7 +108,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
 
     function filterCriteria(value,gathering) {
 
-        var finalResult = false
+        var geolocFilter = false
         //filter by geolocation
         if(value.minLat && value.minLng && value.maxLat&& value.maxLng )
         {
@@ -118,11 +118,62 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
                 && parseFloat(gathering.position.lng) < parseFloat(value.maxLng)
                 && parseFloat(gathering.position.lng) > parseFloat(value.minLng))
                 {
-                    finalResult = true
+                    geolocFilter = true
                 }
+        };
+        
+        //filter by exact date
+        dayFilter = true
+        if(value.date)
+        {
+            console.log("entrou no dayfilter")
+            dayFilter = false
+            weekDay = new Date(value.date).getDay()
+            monthDay = new Date(value.date).getDate()
+
+            if((weekDay == 0 && gathering.frequency.sunday)||
+               (weekDay == 1 && gathering.frequency.monday)||
+               (weekDay == 2 && gathering.frequency.tuesday)||
+               (weekDay == 3 && gathering.frequency.wednesday)||
+               (weekDay == 4 && gathering.frequency.thursday)||
+               (weekDay == 5 && gathering.frequency.friday)||
+               (weekDay == 6 && gathering.frequency.saturday)||
+               value.date == gathering.date)
+               dayFilter = true
+            else if(
+               (weekDay == 0 && gathering.frequency.monthWeekDay == "sunday")||
+               (weekDay == 1 && gathering.frequency.monthWeekDay == "monday")||
+               (weekDay == 2 && gathering.frequency.monthWeekDay == "tuesday")||
+               (weekDay == 3 && gathering.frequency.monthWeekDay == "wednesday")||
+               (weekDay == 4 && gathering.frequency.monthWeekDay == "thursday")||
+               (weekDay == 5 && gathering.frequency.monthWeekDay == "friday")||
+               (weekDay == 6 && gathering.frequency.monthWeekDay == "saturday"))
+               {
+                   if(monthDay  < 8 && gathering.frequency.monthWeek == 1)
+                    dayFilter = true
+                   else if(monthDay  < 15 && gathering.frequency.monthWeek == 2)
+                    dayFilter = true
+                   else if(monthDay  < 22 && gathering.frequency.monthWeek == 3)
+                    dayFilter = true
+                   else if(monthDay  < 29 && gathering.frequency.monthWeek == 4)
+                    dayFilter = true
+               }
         }
+
+        //filter by time
+        timeFilter = true
+        if(value.minTime && value.maxTime )
+        {
+            console.log("entrou no timefilter")
+
+            timeFilter = false
+            if(gathering.time < value.maxTime && gathering.time > value.minTime )
+                timeFilter = true
+        }
+
+      
         //add other filters here
-        return finalResult;
+        return geolocFilter && timeFilter && dayFilter;
     }
    //Update
    //Search gathering by id and update the other fields
