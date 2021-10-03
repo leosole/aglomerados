@@ -29,6 +29,6 @@ yarn-error.log*
 keys.json
 /front/src/apikey.js
 
+.strapi-updater.json
+
 node_modules
-package-lock.json
-front/package-lock.json
