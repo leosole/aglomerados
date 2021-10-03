@@ -122,42 +122,51 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
                 }
         };
         
-        //filter by exact date
+        //filter by date range
         dayFilter = true
-        if(value.date)
+        if(value.minDate && value.maxDate)
         {
-            console.log("entrou no dayfilter")
-            dayFilter = false
-            weekDay = new Date(value.date).getDay()
-            monthDay = new Date(value.date).getDate()
+            const start = new Date(value.minDate);
+            const end = Date(value.maxDate);
+            let loop = new Date(start);
+            while(loop <= end)
+            {
+                console.log("entrou no dayfilter")
+                dayFilter = false
+                weekDay = loop.getDay()
+                monthDay = loop.getDate()
 
-            if((weekDay == 0 && gathering.frequency.sunday)||
-               (weekDay == 1 && gathering.frequency.monday)||
-               (weekDay == 2 && gathering.frequency.tuesday)||
-               (weekDay == 3 && gathering.frequency.wednesday)||
-               (weekDay == 4 && gathering.frequency.thursday)||
-               (weekDay == 5 && gathering.frequency.friday)||
-               (weekDay == 6 && gathering.frequency.saturday)||
-               value.date == gathering.date)
-               dayFilter = true
-            else if(
-               (weekDay == 0 && gathering.frequency.monthWeekDay == "sunday")||
-               (weekDay == 1 && gathering.frequency.monthWeekDay == "monday")||
-               (weekDay == 2 && gathering.frequency.monthWeekDay == "tuesday")||
-               (weekDay == 3 && gathering.frequency.monthWeekDay == "wednesday")||
-               (weekDay == 4 && gathering.frequency.monthWeekDay == "thursday")||
-               (weekDay == 5 && gathering.frequency.monthWeekDay == "friday")||
-               (weekDay == 6 && gathering.frequency.monthWeekDay == "saturday"))
-               {
-                   if(monthDay  < 8 && gathering.frequency.monthWeek == 1)
-                    dayFilter = true
-                   else if(monthDay  < 15 && gathering.frequency.monthWeek == 2)
-                    dayFilter = true
-                   else if(monthDay  < 22 && gathering.frequency.monthWeek == 3)
-                    dayFilter = true
-                   else if(monthDay  < 29 && gathering.frequency.monthWeek == 4)
-                    dayFilter = true
-               }
+                if((weekDay == 0 && gathering.frequency.sunday)||
+                (weekDay == 1 && gathering.frequency.monday)||
+                (weekDay == 2 && gathering.frequency.tuesday)||
+                (weekDay == 3 && gathering.frequency.wednesday)||
+                (weekDay == 4 && gathering.frequency.thursday)||
+                (weekDay == 5 && gathering.frequency.friday)||
+                (weekDay == 6 && gathering.frequency.saturday)||
+                value.date == gathering.date)
+                dayFilter = true
+                else if(
+                (weekDay == 0 && gathering.frequency.monthWeekDay == "sunday")||
+                (weekDay == 1 && gathering.frequency.monthWeekDay == "monday")||
+                (weekDay == 2 && gathering.frequency.monthWeekDay == "tuesday")||
+                (weekDay == 3 && gathering.frequency.monthWeekDay == "wednesday")||
+                (weekDay == 4 && gathering.frequency.monthWeekDay == "thursday")||
+                (weekDay == 5 && gathering.frequency.monthWeekDay == "friday")||
+                (weekDay == 6 && gathering.frequency.monthWeekDay == "saturday"))
+                {
+                    if(monthDay  < 8 && gathering.frequency.monthWeek == 1)
+                        dayFilter = true
+                    else if(monthDay  < 15 && gathering.frequency.monthWeek == 2)
+                        dayFilter = true
+                    else if(monthDay  < 22 && gathering.frequency.monthWeek == 3)
+                        dayFilter = true
+                    else if(monthDay  < 29 && gathering.frequency.monthWeek == 4)
+                        dayFilter = true
+                }
+                console.log(loop)
+                let newDate = loop.setDate(loop.getDate() + 1)
+                loop = new Date(newDate)
+            }
         }
 
         //filter by time
