@@ -190,9 +190,9 @@ export default function AddAglomeracaoForm(props) {
   
   const onSubmit = (body) => {
     body.week = week
-    body.time = moment(time).format('H:m')
-    if(date) 
-      body.date = moment(date).format('D/M/YYYY')
+    body.time = moment(time).format('HH:mm')
+    if(frequency === 'único') 
+      body.date = moment(date).format('DD/MM/YYYY')
     apiAglomeracao.post(urlAglomeracao, body)
     .then((r) =>{
       console.log(r)
