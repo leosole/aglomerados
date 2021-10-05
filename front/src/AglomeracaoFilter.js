@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField'
 import { LocalizationProvider, TimePicker } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import moment from 'moment'
+import { useForm } from "react-hook-form";
 import DateRangeIcon from '@material-ui/icons/DateRange'
 import 'react-date-range/dist/styles.css' // main css file
 import 'react-date-range/dist/theme/default.css' // theme css file
@@ -14,8 +15,9 @@ import { Box } from '@mui/system'
 
 
 export default function AglomeracaoFilter (props) {
-    const [startDate, setStartDate] = React.useState(new Date())
-    const [endDate, setEndDate] = React.useState(null)
+    const { register, handleSubmit } = useForm()
+    // const [startDate, setStartDate] = React.useState(new Date())
+    // const [endDate, setEndDate] = React.useState(null)
     const [state, setState] = React.useState([
         {
           startDate: new Date(),
@@ -23,7 +25,6 @@ export default function AglomeracaoFilter (props) {
           key: 'selection'
         }
     ])
-      
     const [startTime, setStartTime] = React.useState(null)
     const [endTime, setEndTime] = React.useState(null)
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -37,9 +38,9 @@ export default function AglomeracaoFilter (props) {
         setAnchorEl(null);
     };
 
-    const handleFilter = () => {
+    const onSubmit = (e) => {
+        props.handleFilter(e)
         handleClose()
-        props.handleFilter(state[0].startDate, state[0].endDate, startTime, endTime)
     }
 
     const handleClean = () => {
@@ -81,6 +82,7 @@ export default function AglomeracaoFilter (props) {
                     <LocalizationProvider dateAdapter={AdapterDateFns} >
                         <TimePicker
                             label="De"
+                            ampm={false}
                             value={startTime}
                             onChange={(newTime) => {
                                 setStartTime(newTime)
@@ -91,6 +93,7 @@ export default function AglomeracaoFilter (props) {
                         />
                         <TimePicker
                             label="Até"
+                            ampm={false}
                             value={endTime}
                             onChange={(newTime) => {
                                 setEndTime(newTime)
@@ -101,21 +104,29 @@ export default function AglomeracaoFilter (props) {
                         />
                     </LocalizationProvider>
                 </Box>
-                <Button 
-                    color="warning"
-                    onClick={handleClean} 
-                    sx={{width: '50%'}}
-                >
-                    Limpar
-                </Button>
-                <Button 
-                    onClick={handleFilter} 
-                    sx={{width: '50%'}}
-                >
-                    Filtrar
-                </Button>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <input id="startDate" hidden readOnly {...register("startDate", {value: state[0].startDate})}/>
+                    <input id="endDate" hidden readOnly {...register("endDate", {value: state[0].endDate})}/>
+                    <input id="startTime" hidden readOnly {...register("startTime", {value: startTime})}/>
+                    <input id="endTime" hidden readOnly {...register("endTime", {value: endTime})}/>
+                    <Button 
+                        color="warning"
+                        onClick={handleClean} 
+                        sx={{width: '50%'}}
+                    >
+                        Limpar
+                    </Button>
+                    <Button 
+                        // onClick={() => handleFilter()} 
+                        type="submit"
+                        // color="secondary"
+                        // variant="contained" 
+                        sx={{width: '50%'}}
+                    >
+                        Filtrar
+                    </Button>
+                </form>
             </Popover>
-
         </div>
     )
 }

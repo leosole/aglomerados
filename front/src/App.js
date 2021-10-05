@@ -60,8 +60,13 @@ function App(props) {
   const [isLogInDrawerOpen, setIsLogInDrawerOpen] = React.useState(false)
   const [user, setUser] = React.useState(null)
   const [zoom, setZoom] = React.useState(14)
-  const [dateFilter, setDateFilter] = React.useState(null)
-  const [timeFilter, setTimeFilter] = React.useState(null)
+  const [filterParams, setFilterParams] = React.useState(null)
+  var isChanging = [false, false]
+  var markerArray = []
+
+  const setMarkerArray = (m) => {
+    markerArray = m
+  }
 
   const theme = createTheme({
     overrides: {
@@ -82,52 +87,51 @@ function App(props) {
   const openLogInDrawer = () => setIsLogInDrawerOpen(!isLogInDrawerOpen)
 
   const handleClean = () => {
-    setDateFilter(null)
-    setTimeFilter(null)
+    setFilterParams(null)
   }
 
-  const handleFilter = async (startDate, endDate, startTime, endTime) => {
+  const handleFilter = async (e) => {
+    const {startDate, endDate, startTime, endTime} = e
+    var params = {}
+    await clearMarkers()
     if(startDate && endDate) {
-      await setDateFilter({
-        minDate: startDate,
-        maxDate: endDate
-      })
-      console.log(dateFilter)
-      
+      params.minDate = startDate.getTime()
+      params.maxDate = endDate.getTime()      
     }
     if(startTime && endTime) {
-      await setTimeFilter({
-        minTime: startTime,
-        maxTime: endTime
-     })
-     console.log(timeFilter)
+      params.minTime = startTime.getHours() 
+      params.maxTime = endTime.getHours() 
     }
-    
-    onTilesLoaded()
+    setFilterParams(params)
   }
-  const getFilteredMarkers = (minLat,maxLat,minLng,maxLng) =>{
-    var requestUrl = urlAglomeracao+ "?minLat="+ minLat+"&maxLat="+ maxLat+"&minLng=" + minLng +"&maxLng=" + maxLng
-    var params = {}
-    if(dateFilter){
-      params.minDate = dateFilter.minDate
-      params.maxDate = dateFilter.maxDate
-    }
-    if(timeFilter){
-      params.minTime = timeFilter.minTime
-      params.maxTime = timeFilter.maxTime
-    }
 
-    apiAglomeracao.get(requestUrl, {
-      params: params
-    })
+  React.useEffect(() => {
+    onTilesLoaded()
+  },[filterParams])
+
+  const getFilteredMarkers = async (minLat,maxLat,minLng,maxLng) =>{
+    var requestUrl = urlAglomeracao+ "?minLat="+ minLat+"&maxLat="+ maxLat+"&minLng=" + minLng +"&maxLng=" + maxLng
+    for(var i in filterParams) {
+      requestUrl += '&' + i + '=' + filterParams[i]
+    }
+    console.log(requestUrl)
+    apiAglomeracao.get(requestUrl)
     .then((r) =>{
+      console.log(r.data)
       loadMarkers(r.data)
     })
     .catch((e) => console.log(e))
   }
 
-  const loadMarkers = (data) => {
-    setMarkers([])
+  const clearMarkers = () => {
+    for (var i in markerArray)
+      markerArray[i].setMap(null)
+    setMarkerArray(null)
+  }
+
+  const loadMarkers = async (data) => {
+    setLoaded(false)
+    setMarkers(null)
     data.map((m) => {
       m.position.lat = parseFloat(m.position.lat)
       m.position.lng = parseFloat(m.position.lng)
@@ -159,14 +163,16 @@ function App(props) {
       })
   }
 
-  const onTilesLoaded = () => {
-    setBounds(map.getBounds())
-    var minLat = map.getBounds().tc.g;
-    var maxLat = map.getBounds().tc.i;
-    var maxLng = map.getBounds().Hb.i;
-    var minLng = map.getBounds().Hb.g;
-    setZoom(map.getZoom())
-    getFilteredMarkers(minLat,maxLat,minLng,maxLng);
+  const onTilesLoaded = async () => {
+    if(map) {
+      setBounds(map.getBounds())
+      var minLat = map.getBounds().tc.g;
+      var maxLat = map.getBounds().tc.i;
+      var maxLng = map.getBounds().Hb.i;
+      var minLng = map.getBounds().Hb.g;
+      setZoom(map.getZoom())
+      await getFilteredMarkers(minLat,maxLat,minLng,maxLng);
+    }
   }
 
   const addAglomeracao = (e) => {
@@ -204,6 +210,7 @@ function App(props) {
       localization(setCenter)
     }
   }, [])
+
   return isLoaded && (
     <div>
       <GoogleMap
@@ -280,8 +287,10 @@ function App(props) {
           bounds={bounds}
           markers={markers}
           loaded={loaded}
+          map={map}
           setCenter={setCenter}
           setZoom={setZoom}
+          setMarkerArray={setMarkerArray}
         />
         {
           newAglomeracao &&

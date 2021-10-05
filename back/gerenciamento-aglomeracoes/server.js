@@ -73,7 +73,8 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
             monthWeekDay: req.body.month
             },
             time: req.body.time,
-            date: req.body.date 
+            date: req.body.date,
+            dateString: req.body.dateString 
     }
     console.log(req.body)
     console.log(data)
@@ -126,15 +127,26 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
         dayFilter = true
         if(value.minDate && value.maxDate)
         {
+            dayFilter = false
             const start = new Date(value.minDate);
             const end = Date(value.maxDate);
             let loop = new Date(start);
+            if (gathering.date) {
+                if (gathering.date < value.maxDate && gathering.date > value.minDate )
+                    dayFilter = true
+            }
             while(loop <= end)
             {
                 console.log("entrou no dayfilter")
-                dayFilter = false
+                
                 weekDay = loop.getDay()
                 monthDay = loop.getDate()
+                month = loop.getMonth()
+
+                if (gathering.date){
+                    if (gDate.getDate() == monthDay && gDate.getMonth() == month)
+                        dayFilter = true                        
+                }
 
                 if((weekDay == 0 && gathering.frequency.sunday)||
                 (weekDay == 1 && gathering.frequency.monday)||
@@ -142,9 +154,8 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
                 (weekDay == 3 && gathering.frequency.wednesday)||
                 (weekDay == 4 && gathering.frequency.thursday)||
                 (weekDay == 5 && gathering.frequency.friday)||
-                (weekDay == 6 && gathering.frequency.saturday)||
-                value.date == gathering.date)
-                dayFilter = true
+                (weekDay == 6 && gathering.frequency.saturday))
+                    dayFilter = true
                 else if(
                 (weekDay == 0 && gathering.frequency.monthWeekDay == "sunday")||
                 (weekDay == 1 && gathering.frequency.monthWeekDay == "monday")||

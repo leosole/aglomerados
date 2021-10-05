@@ -5,6 +5,7 @@ import { DatePicker,  LocalizationProvider, TimePicker } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import moment from 'moment'
+import frLocale from 'date-fns/locale/fr';
 import apiAglomeracao from "./apiAglomeracao";
 
 const urlAglomeracao = '/gatherings';
@@ -70,7 +71,7 @@ export default function AddAglomeracaoForm(props) {
             margin="normal"
             fullWidth={true}
             >
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
               <DatePicker
                 label="Data"
                 value={date}
@@ -191,8 +192,10 @@ export default function AddAglomeracaoForm(props) {
   const onSubmit = (body) => {
     body.week = week
     body.time = moment(time).format('HH:mm')
-    if(frequency === 'único') 
-      body.date = moment(date).format('DD/MM/YYYY')
+    if(frequency === 'único') {
+      body.dateString = moment(date).format('DD/MM/YYYY')
+      body.date = date.getTime()
+    }
     apiAglomeracao.post(urlAglomeracao, body)
     .then((r) =>{
       console.log(r)
@@ -250,6 +253,7 @@ export default function AddAglomeracaoForm(props) {
           <TimePicker
             label="Hora"
             value={time}
+            ampm={false}
             onChange={(newTime) => {
               setTime(newTime);
             }}

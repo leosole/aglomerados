@@ -6,7 +6,16 @@ import { Link } from "react-router-dom"
 import CardAglomeracao from './CardAglomeracao'
 import AglomeracaoDrawer from './AglomeracaoDrawer'
 
-const urlAglomeracao = '/gatherings/';
+const urlAglomeracao = '/gatherings';
+
+
+function useMarkerRef(marker, markerArray, setMarkerArray) {
+  React.useEffect(() => {
+    if (markerArray) setMarkerArray( ...markerArray, marker)
+    else setMarkerArray([marker])
+  })
+  return markerArray
+}
 
 export default function PopulateMap(props) {
 
@@ -18,38 +27,30 @@ export default function PopulateMap(props) {
   const [cardLongitude, setCardLongitude] = React.useState(null)
   const [anchor, setAnchor] = React.useState(null)
   const [isAglomeracaoDrawerOpen, setIsAglomeracaoDrawerOpen] = React.useState(false)
-  const [selected, setSelected] = React.useState(null)
+  var markerArray = []
+  
 
   const openAglomeracaoDrawer = () => {
-    const center = anchor.anchor.getPosition()
+    const center = anchor.position
     setIsAglomeracaoDrawerOpen(true)
     setCardVisible(false)
     props.setCenter(center)
     props.setZoom(16)
   }
   
-  const openFromUrl = (selected) => {
-    // GET :id
-    // apiAglomeracao.get(urlAglomeracao+':'+props.id)
-    // .then((r) =>{
-    //   setCardID(r.data._id)
-    //   setCardLatitude(r.data.position.lat)
-    //   setCardLongitude(r.data.position.lng)
-    //   setCardName(r.data.name);
-    //   setCardInfo(r.data.info)
-    //   setIsAglomeracaoDrawerOpen(true)
-    // })
-    // .catch((e) => console.log(e))
-    
-    if(selected){
-      setCardID(props.id)
-      setCardLatitude(props.lat)
-      setCardLongitude(props.lng)
-      setCardName(selected.name);
-      setCardInfo(selected.info)
+  const openFromUrl = () => {
+    apiAglomeracao.get(urlAglomeracao+':'+props.id)
+    .then((r) =>{
+      setCardID(r.data[0]._id)
+      setCardLatitude(r.data[0].position.lat)
+      setCardLongitude(r.data[0].position.lng)
+      setCardName(r.data[0].name);
+      setCardInfo(r.data[0].info)
       setIsAglomeracaoDrawerOpen(true)
       props.setZoom(16)
-    }
+    })
+    .catch((e) => console.log(e))
+    
 
   }
 
@@ -61,39 +62,43 @@ export default function PopulateMap(props) {
     )
   }
 
-  const onMarkerLoad = (m) => {
-    const temp = props.markers[m.zIndex];
-    m.addListener("click", () => {
-      setCardID(temp._id)
-      setCardLatitude(temp.position.lat)
-      setCardLongitude(temp.position.lng)
-      setCardName(temp.name);
-      setCardInfo(temp.info)
-      setAnchor({anchor: m})
-      setCardVisible(true)
-    })
-    if(!selected){
-      setSelected(props.markers.filter(m => m._id === props.id)[0])
+  const saveRefs = m => {
+    if(m){
+      markerArray.push(m.marker)
+      props.setMarkerArray(markerArray)
     }
+  }
+
+  const handleClick = (e, m) => {
+    console.log(m)
+    setCardID(m._id)
+    setCardLatitude(m.position.lat)
+    setCardLongitude(m.position.lng)
+    setCardName(m.name);
+    setCardInfo(m.info)
+    // setAnchor({anchor: m})
+    setAnchor({position: m.position})
+    setCardVisible(true)
   }
 
   React.useEffect(() => {
     if(props.id){
-      openFromUrl(selected)
+      openFromUrl()
     }
-  }, [selected])
+  }, [])
   
+
   return (
     <div>
       {
         props.loaded &&
           props.markers.map((m, i) => (
               <Marker 
-                  key={i}
-                  zIndex={i}
-                  onLoad={onMarkerLoad} 
-                  position={m.position} 
-                  clickable={true}
+                key={i}
+                ref={saveRefs}
+                onClick={(e) => handleClick(e, m)}
+                position={m.position} 
+                clickable={true}
               />
           ))
       }
