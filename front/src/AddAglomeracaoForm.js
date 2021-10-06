@@ -171,7 +171,7 @@ export default function AddAglomeracaoForm(props) {
                 label="Dia da semana"
                 // defaultValue="domingo"
                 disableUnderline={true}
-                onChange={(e) => setGender(e.target.value.at(-1) === 'o')}
+                onChange={(e) => setGender(e.target.value.at(0) === 's')}
               >
                 <MenuItem value="sunday">Domingo do mes</MenuItem>
                 <MenuItem value="monday">Segunda do mes</MenuItem>
