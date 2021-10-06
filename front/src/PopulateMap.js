@@ -105,6 +105,7 @@ export default function PopulateMap(props) {
       {
         cardVisible &&
         <CardAglomeracao
+          handleClose={() => setCardVisible(false)}
           link={<CardLink />}
           name={cardName}
           info={cardInfo}

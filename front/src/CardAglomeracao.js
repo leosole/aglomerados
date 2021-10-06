@@ -10,7 +10,7 @@ import Typography from "@material-ui/core/Typography";
 export default function CardAglomeracao(props) {
 
   return (
-    <InfoWindow options={props.options}>
+    <InfoWindow options={props.options} onCloseClick={props.handleClose}>
       <Card >
         <CardContent>
           <Typography variant="h5" component="h2">
