@@ -11,6 +11,7 @@ import PopulateMap from './PopulateMap';
 import AddAglomeracaoCard from './AddAglomeracaoCard';
 import CreateProfileDrawer from './CreateProfileDrawer';
 import LogInDrawer from './LogInDrawer';
+import AglomeracaoFilter from './AglomeracaoFilter';
 import localization from './localization';
 
 const urlAglomeracao = '/gatherings/';
@@ -59,6 +60,14 @@ function App(props) {
   const [isLogInDrawerOpen, setIsLogInDrawerOpen] = React.useState(false)
   const [user, setUser] = React.useState(null)
   const [zoom, setZoom] = React.useState(14)
+  const [filterParams, setFilterParams] = React.useState(null)
+  var isChanging = [false, false]
+  var markerArray = []
+
+  const setMarkerArray = (m) => {
+    markerArray = m
+  }
+
   const theme = createTheme({
     overrides: {
       
@@ -77,16 +86,52 @@ function App(props) {
   const openCreateProfileDrawer = () => setIsCreateProfileOpen(!isCreateProfileOpen)
   const openLogInDrawer = () => setIsLogInDrawerOpen(!isLogInDrawerOpen)
 
-  const getFilteredMarkers = (minLat,maxLat,minLng,maxLng) =>{
-    var requestUrl = urlAglomeracao+ "?minLat="+ minLat+"&maxLat="+ maxLat+"&minLng=" + minLng +"&maxLng=" + maxLng;
+  const handleClean = () => {
+    setFilterParams(null)
+  }
+
+  const handleFilter = async (e) => {
+    const {startDate, endDate, startTime, endTime} = e
+    var params = {}
+    await clearMarkers()
+    if(startDate && endDate) {
+      params.minDate = startDate.getTime()
+      params.maxDate = endDate.getTime()      
+    }
+    if(startTime && endTime) {
+      params.minTime = startTime.getHours() 
+      params.maxTime = endTime.getHours() 
+    }
+    setFilterParams(params)
+  }
+
+  React.useEffect(() => {
+    onTilesLoaded()
+  },[filterParams])
+
+  const getFilteredMarkers = async (minLat,maxLat,minLng,maxLng) =>{
+    var requestUrl = urlAglomeracao+ "?minLat="+ minLat+"&maxLat="+ maxLat+"&minLng=" + minLng +"&maxLng=" + maxLng
+    for(var i in filterParams) {
+      requestUrl += '&' + i + '=' + filterParams[i]
+    }
+    console.log(requestUrl)
     apiAglomeracao.get(requestUrl)
     .then((r) =>{
+      console.log(r.data)
       loadMarkers(r.data)
     })
     .catch((e) => console.log(e))
   }
 
-  const loadMarkers = (data) => {
+  const clearMarkers = () => {
+    for (var i in markerArray)
+      markerArray[i].setMap(null)
+    setMarkerArray(null)
+  }
+
+  const loadMarkers = async (data) => {
+    setLoaded(false)
+    setMarkers(null)
     data.map((m) => {
       m.position.lat = parseFloat(m.position.lat)
       m.position.lng = parseFloat(m.position.lng)
@@ -118,14 +163,16 @@ function App(props) {
       })
   }
 
-  const onTilesLoaded = () => {
-    setBounds(map.getBounds())
-    var minLat = map.getBounds().tc.g;
-    var maxLat = map.getBounds().tc.i;
-    var maxLng = map.getBounds().Hb.i;
-    var minLng = map.getBounds().Hb.g;
-    setZoom(map.getZoom())
-    getFilteredMarkers(minLat,maxLat,minLng,maxLng);
+  const onTilesLoaded = async () => {
+    if(map) {
+      setBounds(map.getBounds())
+      var minLat = map.getBounds().tc.g;
+      var maxLat = map.getBounds().tc.i;
+      var maxLng = map.getBounds().Hb.i;
+      var minLng = map.getBounds().Hb.g;
+      setZoom(map.getZoom())
+      await getFilteredMarkers(minLat,maxLat,minLng,maxLng);
+    }
   }
 
   const addAglomeracao = (e) => {
@@ -157,13 +204,13 @@ function App(props) {
   }
 
   React.useEffect(() => {
-    console.log(props.lat)
     if (props.lat && props.lng) {
       setCenter({lat:parseFloat(props.lat), lng:parseFloat(props.lng)})
     } else {
       localization(setCenter)
     }
   }, [])
+
   return isLoaded && (
     <div>
       <GoogleMap
@@ -225,8 +272,14 @@ function App(props) {
                   <SearchIcon />
                 </InputAdornment>
               }
+              endAdornment={
+                <InputAdornment position="end">
+                  <AglomeracaoFilter handleFilter={handleFilter} handleClean={handleClean}/>
+                </InputAdornment>
+              }
             />
           </StandaloneSearchBox>
+          
         </ThemeProvider>
         <PopulateMap 
           id={props.id}
@@ -234,8 +287,10 @@ function App(props) {
           bounds={bounds}
           markers={markers}
           loaded={loaded}
+          map={map}
           setCenter={setCenter}
           setZoom={setZoom}
+          setMarkerArray={setMarkerArray}
         />
         {
           newAglomeracao &&
