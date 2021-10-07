@@ -66,6 +66,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
 
    //Read by filter
    app.get('/reviews', cors(), (req, res) => {
+       console.log(req)
         const cursor = reviewsCollection.find().toArray()
         .then(results => {
             //sends gatherings as a jsons
@@ -88,7 +89,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
         })
 
     function filterCriteria(value,gathering) {
-
+console.log(value)
         var gatheringFilter = true
         if(value.body.gatheringId != gathering.Id)
             return false
