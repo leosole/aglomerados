@@ -44,8 +44,7 @@ export default function PopulateMap(props) {
       setCardID(r.data[0]._id)
       setCardLatitude(r.data[0].position.lat)
       setCardLongitude(r.data[0].position.lng)
-      setCardName(r.data[0].name);
-      setCardInfo(r.data[0].info)
+      setCardInfo(r.data[0])
       setIsAglomeracaoDrawerOpen(true)
       props.setZoom(16)
     })
@@ -56,9 +55,11 @@ export default function PopulateMap(props) {
 
   const CardLink = () => {
     return (
-      <Button size="small" onClick={() => openAglomeracaoDrawer()}>
-        <Link to={`/?id=${cardID}&lat=${cardLatitude}&lng=${cardLongitude}`}>Ver mais</Link>
-      </Button>
+      <Link to={`/?id=${cardID}&lat=${cardLatitude}&lng=${cardLongitude}`}>
+        <Button size="small" onClick={() => openAglomeracaoDrawer()} >
+          Ver mais
+        </Button>
+      </Link>
     )
   }
 
@@ -74,9 +75,7 @@ export default function PopulateMap(props) {
     setCardID(m._id)
     setCardLatitude(m.position.lat)
     setCardLongitude(m.position.lng)
-    setCardName(m.name);
-    setCardInfo(m.info)
-    // setAnchor({anchor: m})
+    setCardInfo(m)
     setAnchor({position: m.position})
     setCardVisible(true)
   }
@@ -107,7 +106,6 @@ export default function PopulateMap(props) {
         <CardAglomeracao
           handleClose={() => setCardVisible(false)}
           link={<CardLink />}
-          name={cardName}
           info={cardInfo}
           options={anchor}
         />
@@ -116,7 +114,6 @@ export default function PopulateMap(props) {
         isAglomeracaoDrawerOpen &&
         <AglomeracaoDrawer
           user={props.user}
-          name={cardName}
           info={cardInfo}
           isOpen={isAglomeracaoDrawerOpen} 
           setIsAglomeracaoDrawerOpen={setIsAglomeracaoDrawerOpen}

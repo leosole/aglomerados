@@ -4,10 +4,28 @@ import { Button, CardActions, CardContent, Card, IconButton  } from "@material-u
 import { createTheme, ThemeProvider, styled } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ShowReviews from './ShowReviews';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 
 
-export default function AglomeracaoDrawer(props){
-
+export default function AglomeracaoDrawer({info, ...props}){
+    var finalLetter = null
+    var littleLetter = null
+    var monthlyOptions = null
+    if(info.frequency.monthWeekDay){
+      finalLetter = info.frequency.monthWeekDay.at(0) === 's' ? 'o' : 'a'
+      littleLetter = info.frequency.monthWeekDay.at(0) === 's' ? 'º' : 'ª'
+      monthlyOptions = ['1'+littleLetter, '2'+littleLetter, '3'+littleLetter, 'últim'+finalLetter]
+    }
+    const weekOptions = {
+      sunday: 'domingo',
+      monday: 'segunda',
+      tuesday: 'terça',
+      wednesday: 'quarta',
+      thursday: 'quinta',
+      friday: 'sexta',
+      saturday: 'sábado'
+    }
     const theme = createTheme({
         typography: {
             h5: {
@@ -59,19 +77,61 @@ export default function AglomeracaoDrawer(props){
                         <ChevronLeftIcon fontSize="large"/>
                     </IconButton>
                 </DrawerHeader>
-                <Typography variant="h5" >{props.name}</Typography>
+                <Typography variant="h5" >{info.name}</Typography>
                 <Card elevation={0} >
                     <CardContent>
-                    {props.info.map((i, n) => (
-                        <div key={n}>
+                    {
+                        info.dateString &&
+                        <div>
                         <Typography variant="body2" component="p">
-                            {i.key}
+                            Data
                         </Typography>
                         <Typography color="textSecondary">
-                            {i.value}
+                            {info.dateString}
                         </Typography>
                         </div>
-                    ))}
+                    }
+                    {
+                        info.frequencyType === 'semanal' &&
+                        <div>
+                        <Typography variant="body2" component="p">
+                            Toda semana
+                        </Typography>
+                        <Stack direction="row" spacing={1}>
+                            {info.frequency.sunday && <Chip label="Domingo" color="secondary" variant="outlined" />}
+                            {info.frequency.monday && <Chip label="Segunda" color="secondary" variant="outlined" />}
+                            {info.frequency.tuesday && <Chip label="Terça" color="secondary" variant="outlined" />}
+                            {info.frequency.wednesday && <Chip label="Quarta" color="secondary" variant="outlined" />}
+                            {info.frequency.thursday && <Chip label="Quinta" color="secondary" variant="outlined" />}
+                            {info.frequency.friday && <Chip label="Sexta" color="secondary" variant="outlined" />}
+                            {info.frequency.saturday && <Chip label="Sábado" color="secondary" variant="outlined" />}
+                        </Stack>
+                        </div>
+                    }
+                    {
+                        info.frequency.monthWeek &&
+                        <Chip 
+                            color="secondary"
+                            variant="outlined"
+                            label={`Tod${finalLetter} ${monthlyOptions[info.frequency.monthWeek]} ${weekOptions[info.frequency.monthWeekDay]} do mes`}  
+                        />
+                    }
+                    <Typography variant="body2" component="p">
+                        Hora
+                    </Typography>
+                    <Typography color="textSecondary">
+                        {info.time}
+                    </Typography>
+                        {info.info.map((i, n) => (
+                            <div key={n}>
+                            <Typography variant="body2" component="p">
+                                {i.key}
+                            </Typography>
+                            <Typography color="textSecondary">
+                                {i.value}
+                            </Typography>
+                            </div>
+                        ))}
                     </CardContent>
                     <CardActions>
                         <Button size="small">Compartilhar</Button>

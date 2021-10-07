@@ -61,6 +61,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
                 value: req.body.description
             }
         ],
+        frequencyType: req.body.frequency,
         frequency: {
             sunday: req.body.week.sunday,
             monday: req.body.week.monday,
@@ -72,9 +73,9 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
             monthWeek: req.body.todo,
             monthWeekDay: req.body.month
             },
-            time: req.body.time,
-            date: req.body.date,
-            dateString: req.body.dateString 
+        time: req.body.time,
+        date: req.body.date,
+        dateString: req.body.dateString 
     }
     console.log(req.body)
     console.log(data)
