@@ -23,6 +23,18 @@ services:
     ports:
       - "3030:3030"
 
+  backend-avaliacoes:
+    build:
+      context: ./back/gerenciamento-avaliacoes
+      dockerfile: Dockerfile
+    container_name: backend-avaliacoes
+    command: npm start
+    volumes:
+      - ./back/gerenciamento-avaliacoes:/back/gerenciamento-avaliacoes
+      - /back/gerenciamento-avaliacoes/node_modules
+    ports:
+      - "3040:3040"
+
   backend-usuarios:
     build:
       context: ./back/gerenciamento-usuario
