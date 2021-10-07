@@ -4,7 +4,6 @@ const cors = require('cors');
 const fs = require('fs')
 const app = express();
 const { MongoClient } = require("mongodb");
-const helper = require('./helperFunctions.js');
 var ObjectId = require('mongodb').ObjectId;
 const { query } = require('express');
 
