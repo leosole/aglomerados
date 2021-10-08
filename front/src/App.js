@@ -4,7 +4,6 @@ import { Input, InputAdornment } from '@material-ui/core';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import React from 'react'
-import apikey from './apikey';
 import Header from './Header';
 import apiAglomeracao from './apiAglomeracao';
 import PopulateMap from './PopulateMap';
@@ -43,7 +42,7 @@ function App(props) {
   
   const { isLoaded } = useJsApiLoader({
     id: 'aglomerados',
-    googleMapsApiKey: apikey,
+    googleMapsApiKey: process.env.GOOGLE_API,
     libraries: libraries
   })
   
