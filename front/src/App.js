@@ -39,7 +39,6 @@ const mapOptions = {
 
 
 function App(props) {
-  console.log(process.env.REACT_APP_GOOGLE_API)
   const { isLoaded } = useJsApiLoader({
     id: 'aglomerados',
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API,
