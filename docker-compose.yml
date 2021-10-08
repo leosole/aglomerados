@@ -1,0 +1,48 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    container_name: aglomerados-frontend
+    volumes:
+       - ./front:/front
+       - /front/node_modules
+  
+  backend-aglomeracoes:
+    build:
+      context: ./back/gerenciamento-aglomeracoes
+      dockerfile: Dockerfile
+    container_name: backend-aglomeracoes
+    command: npm start
+    volumes:
+      - ./back/gerenciamento-aglomeracoes:/back/gerenciamento-aglomeracoes
+      - /back/gerenciamento-aglomeracoes/node_modules
+    ports:
+      - "3030:3030"
+
+  backend-avaliacoes:
+    build:
+      context: ./back/gerenciamento-avaliacoes
+      dockerfile: Dockerfile
+    container_name: backend-avaliacoes
+    command: npm start
+    volumes:
+      - ./back/gerenciamento-avaliacoes:/back/gerenciamento-avaliacoes
+      - /back/gerenciamento-avaliacoes/node_modules
+    ports:
+      - "3040:3040"
+
+  backend-usuarios:
+    build:
+      context: ./back/gerenciamento-usuario
+      dockerfile: Dockerfile
+    container_name: backend-usuarios
+    command: npm start
+    volumes:
+      - ./back/gerenciamento-usuario:/back/gerenciamento-usuario
+      - /back/gerenciamento-usuario/node_modules
+    ports:
+      - "1337:1337"

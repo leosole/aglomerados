@@ -1,0 +1,36 @@
+<html>
+    <form action="/gatherings" method="POST">
+        <input type="number" placeholder="userId" name="userId">
+        <input type="text" placeholder="name" name="name">
+        <input type="number" step="0.000000000000001" placeholder="latitude" name="latitude">
+        <input type="number" step="0.000000000000001" placeholder="longitude" name="longitude">
+        <input type="text" placeholder="description" name="description">
+        <button type="submit">Create</button>
+      </form>
+
+      <form action="/gatherings" method="GET">
+        <input type="text" placeholder="id" name="id">
+        <input type="number" step="0.000000000000001" placeholder="minLatitude" name="minLatitude">
+        <input type="number" step="0.000000000000001" placeholder="maxLatitude" name="maxLatitude">
+        <input type="number" step="0.000000000000001" placeholder="minLongitude" name="minLongitude">
+        <input type="number" step="0.000000000000001" placeholder="maxLongitude" name="maxLongitude">
+        <button type="submit">Read</button>
+      </form>
+
+      <form action="/gatherings" method="PUT">
+        <input type="number" placeholder="userId" name="userId">
+        <input type="text" placeholder="id" name="id">
+        <input type="text" placeholder="name" name="name">
+        <input type="number" step="0.000000000000001" placeholder="latitude" name="latitude">
+        <input type="number" step="0.000000000000001" placeholder="longitude" name="longitude">
+        <input type="text" placeholder="description" name="description">
+        <button type="submit">Update</button>
+      </form>
+
+      <form action="/gatherings" method="DELETE">
+        <input type="number" placeholder="userId" name="userId">
+        <input type="text" placeholder="id" name="id">
+        <button type="submit">Delete</button>
+      </form>
+
+</html>

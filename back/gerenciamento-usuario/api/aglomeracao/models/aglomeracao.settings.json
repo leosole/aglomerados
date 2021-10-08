@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "aglomeracaos",
+  "info": {
+    "name": "Aglomeração",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "IDAglomeracao": {
+      "type": "uid"
+    },
+    "NomeAglomeracao": {
+      "type": "string"
+    },
+    "usuario_criador": {
+      "plugin": "users-permissions",
+      "model": "user"
+    },
+    "DescricaoAglomeracao": {
+      "type": "richtext"
+    }
+  }
+}
