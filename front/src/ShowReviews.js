@@ -40,7 +40,7 @@ export default function ShowReviews(props) {
     const clearInput = () => {
         setRating(0)
         setComment('')
-    }
+    } 
     const showInput = () => {
         return (
             props.user &&
