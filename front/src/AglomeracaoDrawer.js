@@ -69,7 +69,7 @@ export default function AglomeracaoDrawer({info, ...props}){
     }
 
     const handleDrawerClose = () => props.setIsAglomeracaoDrawerOpen(false)
- 
+
     return (
         <ThemeProvider theme={theme}>
             <Drawer
@@ -150,6 +150,7 @@ export default function AglomeracaoDrawer({info, ...props}){
                 </Card>
                 <ShowReviews
                     user={props.user}
+                    aglomeracao={info._id}
                 />
             </Drawer>
         </ThemeProvider>
