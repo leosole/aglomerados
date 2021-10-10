@@ -1,6 +1,6 @@
 import React from 'react'
 import { Drawer, Typography } from '@mui/material';
-import { Button, CardActions, CardContent, Card, IconButton  } from "@material-ui/core";
+import { Button, CardActions, CardContent, Card, IconButton, Rating } from "@material-ui/core";
 import { createTheme, ThemeProvider, styled } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ShowReviews from './ShowReviews';
@@ -11,6 +11,9 @@ import {useLocation, Link} from 'react-router-dom'
 
 
 export default function AglomeracaoDrawer({info, ...props}){
+    const [ rating, setRating ] = React.useState(null)
+    const [mobileView, setMobileView] = React.useState(false);
+    const [maxHeight, setMaxHeight] = React.useState('100vh')
     var finalLetter = null
     var littleLetter = null
     var monthlyOptions = null
@@ -43,9 +46,9 @@ export default function AglomeracaoDrawer({info, ...props}){
             MuiPaper: {
                 styleOverrides:{
                     root: {
-                        minWidth: 400,
-                        maxWidth: '30vw',
-                        padding: 32  
+                        maxWidth: '100vw',
+                        padding: 32,
+                        maxHeight: maxHeight
                     }
                 }
             },
@@ -69,11 +72,28 @@ export default function AglomeracaoDrawer({info, ...props}){
     }
 
     const handleDrawerClose = () => props.setIsAglomeracaoDrawerOpen(false)
+    
+    React.useEffect(() => {
+        const setResponsiveness = () => {
+          return window.innerWidth < 800
+            ? setMobileView(true)
+            : setMobileView(false)
+        };
+        setResponsiveness();
+        window.addEventListener("resize", () => setResponsiveness());
+        return () => {
+          window.removeEventListener("resize", () => setResponsiveness());
+        }
+    }, []);
+    React.useEffect(() => {
+        const css = mobileView ? '70vh' : '100vh' 
+        setMaxHeight(css)
+    },[mobileView])
 
     return (
         <ThemeProvider theme={theme}>
             <Drawer
-                anchor="right"
+                anchor={mobileView ? "bottom" : "right"}
                 open={props.isOpen}
                 onClose={toggleDrawer}
                 hideBackdrop
@@ -125,6 +145,14 @@ export default function AglomeracaoDrawer({info, ...props}){
                             label={`Tod${finalLetter} ${monthlyOptions[info.frequency.monthWeek]} ${weekOptions[info.frequency.monthWeekDay]} do mes`}  
                         />
                     }
+                    <br/>
+                    <Rating
+                        name="rating"
+                        readOnly
+                        value={rating}
+                        getLabelText={(value) => `${value} Estrela${value !== 1 ? 's' : ''}`}
+                        precision={0.1}
+                    />
                     <Typography variant="body2" component="p">
                         Hora
                     </Typography>
@@ -155,6 +183,7 @@ export default function AglomeracaoDrawer({info, ...props}){
                 <ShowReviews
                     user={props.user}
                     aglomeracao={info._id}
+                    setRating={setRating}
                 />
             </Drawer>
         </ThemeProvider>

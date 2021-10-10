@@ -14,19 +14,23 @@ export default function ShowReviews(props) {
     const [ update, setUpdate ] = React.useState(false)
 
     React.useEffect(() => {
+        if(reviews) {
+            const sum = reviews.reduce((acc, review) => acc += parseFloat(review.rating), 0)
+            props.setRating(sum/reviews.length)
+        }
+    }, [reviews])
+
+    React.useEffect(() => {
         apiReviews.get(urlReviews+'/?gatheringId='+props.aglomeracao)
         .then((r) =>{
-            console.log(r)
             setReviews(r.data.reverse())
         })
         .catch((e) => console.log(e))
     },[update])
 
     const onSubmit = (body) => {
-        console.log(body)
         apiReviews.post(urlReviews, body)
         .then((r) =>{
-          console.log(r)
           setUpdate(!update)
           clearInput()
         })
@@ -88,6 +92,7 @@ export default function ShowReviews(props) {
             </form>
         )
     }
+
     return (
         <div>
             <Typography variant="h6" component="h6" align="center">

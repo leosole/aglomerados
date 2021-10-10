@@ -21,7 +21,6 @@ export default function ReviewItem (props) {
         const present = new Date()
         const date = new Date(time)
         const passed = (present.getTime() - date.getTime())/(1000*60*60*24);
-        console.log(passed)
         if(passed>=1){
             const days = Math.floor(passed);
             const plural = days === 1? ' dia':' dias';
@@ -38,7 +37,7 @@ export default function ReviewItem (props) {
             return 'a '+minutes+plural
         }
     }
-    console.log(props)
+
     return (
         <ThemeProvider theme={theme}>
             <Card elevation={0} variant="outlined">
