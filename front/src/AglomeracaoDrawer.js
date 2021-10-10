@@ -6,12 +6,17 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ShowReviews from './ShowReviews';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import { TwitterShareButton, TwitterIcon, WhatsappShareButton, WhatsappIcon } from "react-share"
+import {useLocation} from 'react-router-dom'
 
 
 export default function AglomeracaoDrawer({info, ...props}){
     var finalLetter = null
     var littleLetter = null
     var monthlyOptions = null
+    var query = useLocation()
+    const url = 'localhost:3000/'+query.search
+
     if(info.frequency.monthWeekDay){
       finalLetter = info.frequency.monthWeekDay.at(0) === 's' ? 'o' : 'a'
       littleLetter = info.frequency.monthWeekDay.at(0) === 's' ? 'º' : 'ª'
@@ -64,7 +69,7 @@ export default function AglomeracaoDrawer({info, ...props}){
     }
 
     const handleDrawerClose = () => props.setIsAglomeracaoDrawerOpen(false)
-
+ 
     return (
         <ThemeProvider theme={theme}>
             <Drawer
@@ -123,18 +128,24 @@ export default function AglomeracaoDrawer({info, ...props}){
                         {info.time}
                     </Typography>
                         {info.info.map((i, n) => (
+                            i.value &&
                             <div key={n}>
-                            <Typography variant="body2" component="p">
-                                {i.key}
-                            </Typography>
-                            <Typography color="textSecondary">
-                                {i.value}
-                            </Typography>
+                                <Typography variant="body2" component="p">
+                                    {i.key}
+                                </Typography>
+                                <Typography color="textSecondary">
+                                    {i.value}
+                                </Typography>
                             </div>
                         ))}
                     </CardContent>
                     <CardActions>
-                        <Button size="small">Compartilhar</Button>
+                        <TwitterShareButton title={info.name} url={url}> 
+                            <TwitterIcon size={24} round/> 
+                        </TwitterShareButton>
+                        <WhatsappShareButton title={info.name} url={url}> 
+                            <WhatsappIcon size={24} round/> 
+                        </WhatsappShareButton>
                     </CardActions>
                 </Card>
                 <ShowReviews
