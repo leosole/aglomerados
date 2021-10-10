@@ -7,7 +7,7 @@ import ShowReviews from './ShowReviews';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import { TwitterShareButton, TwitterIcon, WhatsappShareButton, WhatsappIcon } from "react-share"
-import {useLocation} from 'react-router-dom'
+import {useLocation, Link} from 'react-router-dom'
 
 
 export default function AglomeracaoDrawer({info, ...props}){
@@ -69,18 +69,22 @@ export default function AglomeracaoDrawer({info, ...props}){
     }
 
     const handleDrawerClose = () => props.setIsAglomeracaoDrawerOpen(false)
- 
+
     return (
         <ThemeProvider theme={theme}>
             <Drawer
                 anchor="right"
                 open={props.isOpen}
                 onClose={toggleDrawer}
+                hideBackdrop
+                variant='permanent'
             >   
                 <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon fontSize="large"/>
-                    </IconButton>
+                    <Link to={'/'}>
+                        <IconButton onClick={handleDrawerClose}>
+                            <ChevronLeftIcon fontSize="large"/>
+                        </IconButton>
+                    </Link>
                 </DrawerHeader>
                 <Typography variant="h5" >{info.name}</Typography>
                 <Card elevation={0} >
@@ -150,6 +154,7 @@ export default function AglomeracaoDrawer({info, ...props}){
                 </Card>
                 <ShowReviews
                     user={props.user}
+                    aglomeracao={info._id}
                 />
             </Drawer>
         </ThemeProvider>
