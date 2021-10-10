@@ -7,7 +7,7 @@ import apiUser from './apiUser';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 export default function LogInDrawer(props){
-
+    
     const urlUser = 'auth/local'
     const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -23,8 +23,7 @@ export default function LogInDrawer(props){
             MuiPaper: {
                 styleOverrides:{
                     root: {
-                        minWidth: 400,
-                        maxWidth: '30vw',
+                        maxWidth: '100vw',
                         padding: 32  
                     }
                 }
@@ -52,7 +51,7 @@ export default function LogInDrawer(props){
 
     const onSubmit = (body) => {
         console.log(body)
-        apiUser.post(urlUser, body)
+        apiUser.get(urlUser, body)
         .then((r) => {
             console.log(r.data)
             props.setUser(r.data)
