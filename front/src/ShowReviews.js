@@ -18,7 +18,7 @@ export default function ShowReviews(props) {
             const sum = reviews.reduce((acc, review) => acc += parseFloat(review.rating), 0)
             props.setRating(sum/reviews.length)
         }
-    }, [reviews])
+    }, [props, reviews])
 
     React.useEffect(() => {
         apiReviews.get(urlReviews+'/?gatheringId='+props.aglomeracao)
@@ -26,7 +26,7 @@ export default function ShowReviews(props) {
             setReviews(r.data.reverse())
         })
         .catch((e) => console.log(e))
-    },[update])
+    },[props.aglomeracao, update])
 
     const onSubmit = (body) => {
         apiReviews.post(urlReviews, body)

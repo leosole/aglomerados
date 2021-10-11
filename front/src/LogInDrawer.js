@@ -1,13 +1,15 @@
 import React from 'react'
 import { Drawer, Typography } from '@mui/material';
-import { Button, InputLabel, FormControl, TextField, FormLabel, FormGroup, IconButton  } from "@material-ui/core";
+import { Button, TextField, IconButton  } from "@material-ui/core";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import { createTheme, ThemeProvider, styled } from '@material-ui/core/styles';
 import { useForm } from "react-hook-form";
 import apiUser from './apiUser';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 export default function LogInDrawer(props){
-    
+    const [ showError, setShowError ] = React.useState(false)
     const urlUser = 'auth/local'
     const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -49,16 +51,27 @@ export default function LogInDrawer(props){
 
     const handleDrawerClose = () => props.setIsCreateProfileOpen(false)
 
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setShowError(false);
+    }
+
     const onSubmit = (body) => {
-        console.log(body)
         apiUser.post(urlUser, body)
         .then((r) => {
             console.log(r.data)
-            props.setUser(r.data)
-            props.logIn()
-            props.setIsCreateProfileOpen(false)
+            if(r.data.user) {
+                props.setUser(r.data.user)
+                props.logIn()
+                props.setIsCreateProfileOpen(false)
+            }
         })
-        .catch((e) => console.log(e))
+        .catch((e) => {
+            console.log(e)
+            setShowError(true)
+        })
     }
 
     return (
@@ -78,7 +91,7 @@ export default function LogInDrawer(props){
                     <TextField 
                         margin="normal"
                         fullWidth={true}
-                        label="E-mail"
+                        label="Usuário"
                         {...register("identifier", {required: true })} 
                         id="identifier" 
                         type="text"
@@ -94,7 +107,14 @@ export default function LogInDrawer(props){
                         type="password"
                         disableUnderline={true} />
                     {errors.password && <span >Preencha este campo</span>}
-
+                    {
+                        showError &&
+                        <Snackbar open={showError} autoHideDuration={10000} onClose={handleClose} anchorOrigin={{vertical:'top',horizontal:'right'}}>
+                            <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }} variant="filled">
+                                Usuário e/ou senha incorretos
+                            </Alert>
+                        </Snackbar>
+                    }
                     <Button 
                         type="submit"
                         color="secondary"
