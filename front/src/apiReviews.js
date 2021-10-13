@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default axios.create({
-  baseURL: 'http://localhost:3040/',
+  baseURL: 'https://aglomerados-avaliacoes.herokuapp.com/',
   headers: {
     'Content-Type': 'application/json',
   },
