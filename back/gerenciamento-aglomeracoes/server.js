@@ -129,8 +129,8 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
         if(value.minDate && value.maxDate)
         {
             dayFilter = false
-            const start = new Date(value.minDate);
-            const end = Date(value.maxDate);
+            const start = new Date(parseInt(value.minDate));
+            const end = new Date(parseInt(value.maxDate));
             let loop = new Date(start);
             if (gathering.date) {
                 if (gathering.date < value.maxDate && gathering.date > value.minDate )
@@ -138,16 +138,13 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
             }
             while(loop <= end)
             {
-                console.log("entrou no dayfilter")
                 
                 weekDay = loop.getDay()
                 monthDay = loop.getDate()
                 month = loop.getMonth()
-
-                if (gathering.date){
-                    if (gDate.getDate() == monthDay && gDate.getMonth() == month)
-                        dayFilter = true                        
-                }
+                console.log(weekDay)
+                console.log(monthDay)
+                console.log(month)
 
                 if((weekDay == 0 && gathering.frequency.sunday)||
                 (weekDay == 1 && gathering.frequency.monday)||
@@ -185,8 +182,6 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
         timeFilter = true
         if(value.minTime && value.maxTime )
         {
-            console.log("entrou no timefilter")
-
             timeFilter = false
             if(gathering.time < value.maxTime && gathering.time > value.minTime )
                 timeFilter = true
