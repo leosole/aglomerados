@@ -1,6 +1,6 @@
 import React from 'react'
 import { Drawer, Typography } from '@mui/material';
-import { Button, CardActions, CardContent, Card, IconButton, Rating } from "@material-ui/core";
+import { CardActions, CardContent, Card, IconButton, Rating } from "@material-ui/core";
 import { createTheme, ThemeProvider, styled } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ShowReviews from './ShowReviews';
@@ -110,17 +110,6 @@ export default function AglomeracaoDrawer({info, ...props}){
                 <Card elevation={0} >
                     <CardContent>
                     {
-                        info.dateString &&
-                        <div>
-                        <Typography variant="body2" component="p">
-                            Data
-                        </Typography>
-                        <Typography color="textSecondary">
-                            {info.dateString}
-                        </Typography>
-                        </div>
-                    }
-                    {
                         info.frequencyType === 'semanal' &&
                         <div>
                         <Typography variant="body2" component="p">
@@ -142,7 +131,7 @@ export default function AglomeracaoDrawer({info, ...props}){
                         <Chip 
                             color="secondary"
                             variant="outlined"
-                            label={`Tod${finalLetter} ${monthlyOptions[info.frequency.monthWeek]} ${weekOptions[info.frequency.monthWeekDay]} do mes`}  
+                            label={`Tod${finalLetter} ${monthlyOptions[info.frequency.monthWeek-1]} ${weekOptions[info.frequency.monthWeekDay]} do mes`}  
                         />
                     }
                     <br/>
@@ -153,6 +142,17 @@ export default function AglomeracaoDrawer({info, ...props}){
                         getLabelText={(value) => `${value} Estrela${value !== 1 ? 's' : ''}`}
                         precision={0.1}
                     />
+                    {
+                        info.dateString &&
+                        <div>
+                        <Typography variant="body2" component="p">
+                            Data
+                        </Typography>
+                        <Typography color="textSecondary">
+                            {info.dateString}
+                        </Typography>
+                        </div>
+                    }
                     <Typography variant="body2" component="p">
                         Hora
                     </Typography>

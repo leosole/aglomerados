@@ -66,7 +66,7 @@ export default function CardAglomeracao({ info, ...props}) {
             <Chip 
               color="secondary"
               variant="outlined"
-              label={`Tod${finalLetter} ${monthlyOptions[info.frequency.monthWeek]} ${weekOptions[info.frequency.monthWeekDay]} do mes`}  
+              label={`Tod${finalLetter} ${monthlyOptions[info.frequency.monthWeek-1]} ${weekOptions[info.frequency.monthWeekDay]} do mes`}  
             />
           }
           <Typography variant="body2" component="p">

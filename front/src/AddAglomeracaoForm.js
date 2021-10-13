@@ -229,7 +229,7 @@ export default function AddAglomeracaoForm(props) {
           Frequência  
         </InputLabel>
         <Select
-          {...register("frequencia", {required: true })} 
+          {...register("frequency", {required: true })} 
           id="frequency"
           labelId="frequency-label"
           label="Frequência"
@@ -290,8 +290,8 @@ export default function AddAglomeracaoForm(props) {
         hidden />
 
       <input 
-        {...register("userId", { required: true })} 
-        value={1}
+        {...register("userId", { required: true, value: props.user })} 
+        value={props.user}
         id="userId"
         type="number"
         hidden />

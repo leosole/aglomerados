@@ -59,7 +59,7 @@ function App(props) {
   const [user, setUser] = React.useState(null)
   const [zoom, setZoom] = React.useState(14)
   const [filterParams, setFilterParams] = React.useState(null)
-  var isChanging = [false, false]
+  const [mobileView, setMobileView] = React.useState(false);
   var markerArray = []
 
   const setMarkerArray = (m) => {
@@ -78,7 +78,10 @@ function App(props) {
     },
   });
 
-  const logOff = () => setIsLoggedIn(false)
+  const logOff = () => {
+    setIsLoggedIn(false)
+    setUser(null)
+  }
   const logIn = () => setIsLoggedIn(true)
 
   const openCreateProfileDrawer = () => setIsCreateProfileOpen(!isCreateProfileOpen)
@@ -105,6 +108,7 @@ function App(props) {
 
   React.useEffect(() => {
     onTilesLoaded()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[filterParams])
 
   const getFilteredMarkers = async (minLat,maxLat,minLng,maxLng) =>{
@@ -207,7 +211,20 @@ function App(props) {
     } else {
       localization(setCenter)
     }
-  }, [])
+  }, [props.lat, props.lng])
+
+  React.useEffect(() => {
+    const setResponsiveness = () => {
+      return window.innerWidth < 900
+        ? setMobileView(true)
+        : setMobileView(false)
+    };
+    setResponsiveness();
+    window.addEventListener("resize", () => setResponsiveness());
+    return () => {
+      window.removeEventListener("resize", () => setResponsiveness());
+    }
+  }, []);
 
   return isLoaded && (
     <div>
@@ -261,7 +278,7 @@ function App(props) {
                 outline: 'none',
                 textOverflow: 'ellipses',
                 position: "absolute",
-                left: "50%",
+                left: mobileView ? "50%" : 250,
                 top: "80px",
                 marginLeft: "-160px"
               }}
@@ -281,7 +298,7 @@ function App(props) {
         </ThemeProvider>
         <PopulateMap 
           id={props.id}
-          user={user?.user}
+          user={user}
           bounds={bounds}
           markers={markers}
           loaded={loaded}
