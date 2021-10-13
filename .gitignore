@@ -34,3 +34,5 @@ keys.json
 .strapi-updater.json
 
 node_modules
+back/gerenciamento-usuario/.cache
+back/gerenciamento-usuario/build
