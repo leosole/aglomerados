@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-// const bodyParser = require('body-parser');
 const fs = require('fs')
 const app = express();
 const { MongoClient } = require("mongodb");
@@ -11,8 +10,6 @@ app.use(cors());
 
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
-
-var keys = JSON.parse(fs.readFileSync('./keys.json'))
 
 app.listen(process.env.PORT,function() {
     console.log('listening on '+ +process.env.PORT)
