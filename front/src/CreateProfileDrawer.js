@@ -1,6 +1,6 @@
 import React from 'react'
 import { Drawer, Typography } from '@mui/material';
-import { Button, InputLabel, FormControl, TextField, FormLabel, FormGroup, IconButton  } from "@material-ui/core";
+import { Button, TextField, IconButton  } from "@material-ui/core";
 import { createTheme, ThemeProvider, styled } from '@material-ui/core/styles';
 import { useForm } from "react-hook-form";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -21,8 +21,7 @@ export default function CreateProfileDrawer(props){
             MuiPaper: {
                 styleOverrides:{
                     root: {
-                        minWidth: 400,
-                        maxWidth: '30vw',
+                        maxWidth: '100vw',
                         padding: 32  
                     }
                 }
@@ -77,7 +76,7 @@ export default function CreateProfileDrawer(props){
                     <TextField 
                         margin="normal"
                         fullWidth={true}
-                        label="Nome"
+                        label="Usuário"
                         {...register("username", {required: true })} 
                         id="username" 
                         type="text"

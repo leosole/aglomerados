@@ -2,24 +2,45 @@ import React from 'react'
 import { Typography, TextField, Button, Rating, FormControl } from '@mui/material'
 import { useForm } from "react-hook-form";
 import ReviewItem from './ReviewItem'
+import apiReviews from "./apiReviews";
 
-var reviews = [ // PARA TESTE
-    { id:1, comment: 'teste 1,7 estrela', rating:1.7, user: 'Leo', date:'ontem' },
-    { id:2, comment: 'teste 5 estrelas', rating:5, user: 'Leo', date:'ontem' }
-]
+
+const urlReviews = '/reviews'
 export default function ShowReviews(props) {
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const [ reviews, setReviews ] = React.useState()
+    const [ rating, setRating ] = React.useState(0)
+    const [ comment, setComment ] = React.useState('')
+    const [ update, setUpdate ] = React.useState(false)
+
+    React.useEffect(() => {
+        if(reviews) {
+            const sum = reviews.reduce((acc, review) => acc += parseFloat(review.rating), 0)
+            props.setRating(sum/reviews.length)
+        }
+    }, [props, reviews])
+
+    React.useEffect(() => {
+        apiReviews.get(urlReviews+'/?gatheringId='+props.aglomeracao)
+        .then((r) =>{
+            setReviews(r.data.reverse())
+        })
+        .catch((e) => console.log(e))
+    },[props.aglomeracao, update])
 
     const onSubmit = (body) => {
-        console.log(body)
-        // apiReviews.post(urlAglomeracao, body)
-        // .then((r) =>{
-        //   console.log(r)
-        // })
-        // .catch((e) => console.log(e))
-        // .finally(() => props.returnClick())
+        apiReviews.post(urlReviews, body)
+        .then((r) =>{
+          setUpdate(!update)
+          clearInput()
+        })
+        .catch((e) => console.log(e))
     }
 
+    const clearInput = () => {
+        setRating(0)
+        setComment('')
+    } 
     const showInput = () => {
         return (
             props.user &&
@@ -32,13 +53,17 @@ export default function ShowReviews(props) {
                         {...register("rating", {required: true })} 
                         name="rating"
                         id="rating"
+                        value={rating}
+                        onChange={(e) => setRating(e.target.value)}
                         getLabelText={(value) => `${value} Estrela${value !== 1 ? 's' : ''}`}
-                        precision={0.1}
+                        precision={0.2}
                     />
                     <TextField 
                         label="Comentário"
                         {...register("comment", {required: true })} 
                         id="comment" 
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
                         type="text"
                         multiline={true}
                         disableUnderline={true} />
@@ -48,6 +73,12 @@ export default function ShowReviews(props) {
                     {...register("userID", { required: true, value: props.user.id })} 
                     value={props.user.id}
                     id="userID"
+                    type="text"
+                    hidden />
+                <input 
+                    {...register("gatheringId", { required: true, value: props.aglomeracao })} 
+                    value={props.aglomeracao}
+                    id="gatheringId"
                     type="text"
                     hidden />
                 <Button 
@@ -61,13 +92,14 @@ export default function ShowReviews(props) {
             </form>
         )
     }
+
     return (
         <div>
             <Typography variant="h6" component="h6" align="center">
                 Comentários
             </Typography>
         {showInput()}    
-        {
+        {   reviews &&
             reviews.map(({id, ...review}) => (
                 <ReviewItem key={id} {...review}/>
             ))

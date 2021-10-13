@@ -1,17 +1,25 @@
 import React from 'react'
 import { Drawer, Typography } from '@mui/material';
-import { Button, CardActions, CardContent, Card, IconButton  } from "@material-ui/core";
+import { CardActions, CardContent, Card, IconButton, Rating } from "@material-ui/core";
 import { createTheme, ThemeProvider, styled } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ShowReviews from './ShowReviews';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import { TwitterShareButton, TwitterIcon, WhatsappShareButton, WhatsappIcon } from "react-share"
+import {useLocation, Link} from 'react-router-dom'
 
 
 export default function AglomeracaoDrawer({info, ...props}){
+    const [ rating, setRating ] = React.useState(null)
+    const [mobileView, setMobileView] = React.useState(false);
+    const [maxHeight, setMaxHeight] = React.useState('100vh')
     var finalLetter = null
     var littleLetter = null
     var monthlyOptions = null
+    var query = useLocation()
+    const url = 'localhost:3000/'+query.search
+
     if(info.frequency.monthWeekDay){
       finalLetter = info.frequency.monthWeekDay.at(0) === 's' ? 'o' : 'a'
       littleLetter = info.frequency.monthWeekDay.at(0) === 's' ? 'º' : 'ª'
@@ -38,9 +46,9 @@ export default function AglomeracaoDrawer({info, ...props}){
             MuiPaper: {
                 styleOverrides:{
                     root: {
-                        minWidth: 400,
-                        maxWidth: '30vw',
-                        padding: 32  
+                        maxWidth: '100vw',
+                        padding: 32,
+                        maxHeight: maxHeight
                     }
                 }
             },
@@ -64,33 +72,43 @@ export default function AglomeracaoDrawer({info, ...props}){
     }
 
     const handleDrawerClose = () => props.setIsAglomeracaoDrawerOpen(false)
+    
+    React.useEffect(() => {
+        const setResponsiveness = () => {
+          return window.innerWidth < 800
+            ? setMobileView(true)
+            : setMobileView(false)
+        };
+        setResponsiveness();
+        window.addEventListener("resize", () => setResponsiveness());
+        return () => {
+          window.removeEventListener("resize", () => setResponsiveness());
+        }
+    }, []);
+    React.useEffect(() => {
+        const css = mobileView ? '70vh' : '100vh' 
+        setMaxHeight(css)
+    },[mobileView])
 
     return (
         <ThemeProvider theme={theme}>
             <Drawer
-                anchor="right"
+                anchor={mobileView ? "bottom" : "right"}
                 open={props.isOpen}
                 onClose={toggleDrawer}
+                hideBackdrop
+                variant='permanent'
             >   
                 <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon fontSize="large"/>
-                    </IconButton>
+                    <Link to={'/'}>
+                        <IconButton onClick={handleDrawerClose}>
+                            <ChevronLeftIcon fontSize="large"/>
+                        </IconButton>
+                    </Link>
                 </DrawerHeader>
                 <Typography variant="h5" >{info.name}</Typography>
                 <Card elevation={0} >
                     <CardContent>
-                    {
-                        info.dateString &&
-                        <div>
-                        <Typography variant="body2" component="p">
-                            Data
-                        </Typography>
-                        <Typography color="textSecondary">
-                            {info.dateString}
-                        </Typography>
-                        </div>
-                    }
                     {
                         info.frequencyType === 'semanal' &&
                         <div>
@@ -113,8 +131,27 @@ export default function AglomeracaoDrawer({info, ...props}){
                         <Chip 
                             color="secondary"
                             variant="outlined"
-                            label={`Tod${finalLetter} ${monthlyOptions[info.frequency.monthWeek]} ${weekOptions[info.frequency.monthWeekDay]} do mes`}  
+                            label={`Tod${finalLetter} ${monthlyOptions[info.frequency.monthWeek-1]} ${weekOptions[info.frequency.monthWeekDay]} do mes`}  
                         />
+                    }
+                    <br/>
+                    <Rating
+                        name="rating"
+                        readOnly
+                        value={rating}
+                        getLabelText={(value) => `${value} Estrela${value !== 1 ? 's' : ''}`}
+                        precision={0.1}
+                    />
+                    {
+                        info.dateString &&
+                        <div>
+                        <Typography variant="body2" component="p">
+                            Data
+                        </Typography>
+                        <Typography color="textSecondary">
+                            {info.dateString}
+                        </Typography>
+                        </div>
                     }
                     <Typography variant="body2" component="p">
                         Hora
@@ -123,22 +160,30 @@ export default function AglomeracaoDrawer({info, ...props}){
                         {info.time}
                     </Typography>
                         {info.info.map((i, n) => (
+                            i.value &&
                             <div key={n}>
-                            <Typography variant="body2" component="p">
-                                {i.key}
-                            </Typography>
-                            <Typography color="textSecondary">
-                                {i.value}
-                            </Typography>
+                                <Typography variant="body2" component="p">
+                                    {i.key}
+                                </Typography>
+                                <Typography color="textSecondary">
+                                    {i.value}
+                                </Typography>
                             </div>
                         ))}
                     </CardContent>
                     <CardActions>
-                        <Button size="small">Compartilhar</Button>
+                        <TwitterShareButton title={info.name} url={url}> 
+                            <TwitterIcon size={24} round/> 
+                        </TwitterShareButton>
+                        <WhatsappShareButton title={info.name} url={url}> 
+                            <WhatsappIcon size={24} round/> 
+                        </WhatsappShareButton>
                     </CardActions>
                 </Card>
                 <ShowReviews
                     user={props.user}
+                    aglomeracao={info._id}
+                    setRating={setRating}
                 />
             </Drawer>
         </ThemeProvider>

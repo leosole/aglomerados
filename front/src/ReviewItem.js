@@ -15,7 +15,29 @@ const theme = createTheme({
     },
 })
 
+
 export default function ReviewItem (props) {
+    const getDate = (time) => {
+        const present = new Date()
+        const date = new Date(time)
+        const passed = (present.getTime() - date.getTime())/(1000*60*60*24);
+        if(passed>=1){
+            const days = Math.floor(passed);
+            const plural = days === 1? ' dia':' dias';
+            return 'a '+days+plural
+        }
+        if(passed*24>=1){
+            const hours = Math.floor(passed*24);
+            const plural = hours === 1? ' hora':' horas';
+            return 'a '+hours+plural
+        }
+        else{
+            const minutes = Math.floor(passed*60*24);
+            const plural = minutes === 1? ' minuto':' minutos';
+            return 'a '+minutes+plural
+        }
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <Card elevation={0} variant="outlined">
@@ -31,7 +53,7 @@ export default function ReviewItem (props) {
                         {props.comment}
                     </Typography>
                     <Typography variant="body2" component="p" color="#999">
-                        por {props.user}, em {props.date}
+                        por {props.userID}, {getDate(props.time)}
                     </Typography>
                 </CardContent>
             </Card>

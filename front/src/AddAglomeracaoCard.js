@@ -20,6 +20,7 @@ export default function AddAglomeracaoCard(props) {
             Adicione uma aglomeração
           </Typography>
           <AddAglomeracaoForm
+            user={props.user}
             latitude={props.latitude}  
             longitude={props.longitude}  
             returnClick={() => props.returnRefresh()}

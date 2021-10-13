@@ -4,7 +4,6 @@ const cors = require('cors');
 const fs = require('fs')
 const app = express();
 const { MongoClient } = require("mongodb");
-const helper = require('./helperFunctions.js');
 var ObjectId = require('mongodb').ObjectId;
 const { query } = require('express');
 
@@ -49,11 +48,11 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
   app.post('/reviews', (req, res) => {
     //dummy userid while user management is not available
     const data = {
-        userID: req.query.userID,
-        title: req.query.title,
-        gatheringId: req.query.gatheringId,
-        comment: req.query.comment,
-        rating: req.query.rating,
+        userID: req.body.userID,
+        title: req.body.title,
+        gatheringId: req.body.gatheringId,
+        comment: req.body.comment,
+        rating: req.body.rating,
         time: Date.now()
     }
    // console.log(req)
@@ -88,10 +87,10 @@ MongoClient.connect(uri, { useUnifiedTopology: true })
         }
         })
 
-    function filterCriteria(value,gathering) {
-console.log(value)
+    function filterCriteria(query,gathering) {
+console.log(query)
         var gatheringFilter = true
-        if(value.body.gatheringId != gathering.Id)
+        if(query.gatheringId != gathering.gatheringId)
             return false
         return gatheringFilter
     }

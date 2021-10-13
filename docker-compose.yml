@@ -30,7 +30,7 @@ services:
     container_name: backend-avaliacoes
     command: npm start
     volumes:
-      - ./back/gerenciamento-avaliacoes:/back/gerenciamento-avaliacoes
+      - ./back/gerenciamento-avaliacoes:/app
       - /back/gerenciamento-avaliacoes/node_modules
     ports:
       - "3040:3040"

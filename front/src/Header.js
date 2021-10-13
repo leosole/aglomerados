@@ -85,7 +85,7 @@ export default function Header(props) {
         {
           isLoggedIn ?
           <div>
-            <MenuItem sx={{textTransform:'uppercase'}}>Perfil</MenuItem>
+            {/* <MenuItem sx={{textTransform:'uppercase'}}>Perfil</MenuItem> */}
             <MenuItem onClick={() => handleMenuClick(props.logOff)} sx={menuStyle}>Sair</MenuItem>
           </div>
           :
@@ -102,12 +102,12 @@ export default function Header(props) {
   const showDesktop = (isLoggedIn) => isLoggedIn?
   (
     <div>
-      <Button 
+      {/* <Button 
         color="inherit"
-        // onClick={props.openProfileDrawer}
+        onClick={props.openProfileDrawer}
       >
         Perfil
-      </Button>
+      </Button> */}
       <Button 
         color="inherit"
         onClick={props.logOff}
