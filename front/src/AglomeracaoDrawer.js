@@ -18,7 +18,7 @@ export default function AglomeracaoDrawer({info, ...props}){
     var littleLetter = null
     var monthlyOptions = null
     var query = useLocation()
-    const url = 'localhost:3000/'+query.search
+    const url = 'https://aglomerados.vercel.app/'+query.search
 
     if(info.frequency.monthWeekDay){
       finalLetter = info.frequency.monthWeekDay.at(0) === 's' ? 'o' : 'a'
