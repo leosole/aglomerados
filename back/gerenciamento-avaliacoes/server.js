@@ -14,8 +14,8 @@ app.use(express.json())
 
 var keys = JSON.parse(fs.readFileSync('./keys.json'))
 
-app.listen(3040,function() {
-    console.log('listening on 3040')
+app.listen(process.env.PORT,function() {
+    console.log('listening on '+ +process.env.PORT)
 
 })
 
@@ -35,7 +35,7 @@ app.get('/', (req,res) => {
 
 
   //DB connection string
-var uri = 'mongodb+srv://defaultService:' + keys.mongoDB + '@aglo1.xllzn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+var uri = 'mongodb+srv://defaultService:' + process.env.mongoDB + '@aglo1.xllzn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 const databaseName = "reviews";
 
 MongoClient.connect(uri, { useUnifiedTopology: true })
