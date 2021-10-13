@@ -21,8 +21,7 @@ export default function CreateProfileDrawer(props){
             MuiPaper: {
                 styleOverrides:{
                     root: {
-                        minWidth: 400,
-                        maxWidth: '30vw',
+                        maxWidth: '100vw',
                         padding: 32  
                     }
                 }
