@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-// const bodyParser = require('body-parser');
 const fs = require('fs')
 const app = express();
 const { MongoClient } = require("mongodb");
@@ -13,10 +12,9 @@ app.use(cors());
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 
-var keys = JSON.parse(fs.readFileSync('./keys.json'))
 
-app.listen(3030,function() {
-    console.log('listening on 3030')
+app.listen(process.env.PORT,function() {
+    console.log('listening on ' + process.env.PORT)
 
 })
 
@@ -35,7 +33,7 @@ String.prototype.format = function() {
   }
 
   //DB connection string
-var uri = 'mongodb+srv://defaultService:' + keys.mongoDB + '@aglo1.xllzn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+var uri = 'mongodb+srv://defaultService:' + process.env.mongoDB + '@aglo1.xllzn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 const databaseName = "gatherings";
 
 MongoClient.connect(uri, { useUnifiedTopology: true })
